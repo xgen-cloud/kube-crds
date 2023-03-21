@@ -1,5 +1,5 @@
 {
-  "description": "AtlasBackupPolicy is the Schema for the atlasbackuppolicies API",
+  "description": "AtlasTeam is the Schema for the Atlas Teams API",
   "properties": {
     "apiVersion": {
       "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -13,98 +13,30 @@
       "type": "object"
     },
     "spec": {
-      "description": "AtlasBackupPolicySpec defines the desired state of AtlasBackupPolicy",
+      "description": "TeamSpec defines the desired state of a Team in Atlas",
       "properties": {
-        "items": {
-          "description": "A list of BackupPolicy items",
+        "name": {
+          "description": "The name of the team you want to create.",
+          "type": "string"
+        },
+        "usernames": {
+          "description": "Valid email addresses of users to add to the new team",
           "items": {
-            "properties": {
-              "frequencyInterval": {
-                "description": "Desired frequency of the new backup policy item specified by FrequencyType. A value of 1 specifies the first instance of the corresponding FrequencyType. The only accepted value you can set for frequency interval with NVMe clusters is 12.",
-                "enum": [
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
-                  7,
-                  8,
-                  9,
-                  10,
-                  11,
-                  12,
-                  13,
-                  14,
-                  15,
-                  16,
-                  17,
-                  18,
-                  19,
-                  20,
-                  21,
-                  22,
-                  23,
-                  24,
-                  25,
-                  26,
-                  27,
-                  28,
-                  40
-                ],
-                "type": "integer"
-              },
-              "frequencyType": {
-                "description": "Frequency associated with the backup policy item. One of the following values: hourly, daily, weekly or monthly. You cannot specify multiple hourly and daily backup policy items.",
-                "enum": [
-                  "hourly",
-                  "daily",
-                  "weekly",
-                  "monthly"
-                ],
-                "type": "string"
-              },
-              "retentionUnit": {
-                "description": "Scope of the backup policy item: days, weeks, or months",
-                "enum": [
-                  "days",
-                  "weeks",
-                  "months"
-                ],
-                "type": "string"
-              },
-              "retentionValue": {
-                "description": "Value to associate with RetentionUnit",
-                "type": "integer"
-              }
-            },
-            "required": [
-              "frequencyInterval",
-              "frequencyType",
-              "retentionUnit",
-              "retentionValue"
-            ],
-            "type": "object",
-            "additionalProperties": false
+            "format": "email",
+            "type": "string"
           },
           "type": "array"
         }
       },
       "required": [
-        "items"
+        "name",
+        "usernames"
       ],
       "type": "object",
       "additionalProperties": false
     },
     "status": {
       "properties": {
-        "backupScheduleIDs": {
-          "description": "DeploymentID of the deployment using the backup policy",
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
         "conditions": {
           "description": "Conditions is the list of statuses showing the current state of the Atlas Custom Resource",
           "items": {
@@ -141,10 +73,36 @@
           },
           "type": "array"
         },
+        "id": {
+          "description": "ID of the team",
+          "type": "string"
+        },
         "observedGeneration": {
           "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of. The Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
+        },
+        "projects": {
+          "description": "List of projects which the team is assigned",
+          "items": {
+            "properties": {
+              "id": {
+                "description": "Unique identifier of the project inside atlas",
+                "type": "string"
+              },
+              "name": {
+                "description": "Name given to the project",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
         }
       },
       "required": [
@@ -154,5 +112,8 @@
       "additionalProperties": false
     }
   },
+  "required": [
+    "spec"
+  ],
   "type": "object"
 }
