@@ -39,6 +39,25 @@
             "clusterType": {
               "type": "string"
             },
+            "customZoneMapping": {
+              "items": {
+                "properties": {
+                  "location": {
+                    "type": "string"
+                  },
+                  "zone": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "location",
+                  "zone"
+                ],
+                "type": "object",
+                "additionalProperties": false
+              },
+              "type": "array"
+            },
             "diskSizeGB": {
               "type": "integer"
             },
@@ -60,6 +79,41 @@
                 "required": [
                   "key",
                   "value"
+                ],
+                "type": "object",
+                "additionalProperties": false
+              },
+              "type": "array"
+            },
+            "managedNamespaces": {
+              "items": {
+                "description": "ManagedNamespace represents the information about managed namespace configuration.",
+                "properties": {
+                  "collection": {
+                    "type": "string"
+                  },
+                  "customShardKey": {
+                    "type": "string"
+                  },
+                  "db": {
+                    "type": "string"
+                  },
+                  "isCustomShardKeyHashed": {
+                    "type": "boolean"
+                  },
+                  "isShardKeyUnique": {
+                    "type": "boolean"
+                  },
+                  "numInitialChunks": {
+                    "type": "integer"
+                  },
+                  "presplitHashedZones": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "collection",
+                  "db"
                 ],
                 "type": "object",
                 "additionalProperties": false
@@ -309,6 +363,25 @@
               ],
               "type": "string"
             },
+            "customZoneMapping": {
+              "items": {
+                "properties": {
+                  "location": {
+                    "type": "string"
+                  },
+                  "zone": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "location",
+                  "zone"
+                ],
+                "type": "object",
+                "additionalProperties": false
+              },
+              "type": "array"
+            },
             "diskSizeGB": {
               "description": "Capacity, in gigabytes, of the host's root volume. Increase this number to add capacity, up to a maximum possible value of 4096 (i.e., 4 TB). This value must be a positive integer. The parameter is required if replicationSpecs are configured.",
               "maximum": 4096,
@@ -341,6 +414,41 @@
                 "required": [
                   "key",
                   "value"
+                ],
+                "type": "object",
+                "additionalProperties": false
+              },
+              "type": "array"
+            },
+            "managedNamespaces": {
+              "items": {
+                "description": "ManagedNamespace represents the information about managed namespace configuration.",
+                "properties": {
+                  "collection": {
+                    "type": "string"
+                  },
+                  "customShardKey": {
+                    "type": "string"
+                  },
+                  "db": {
+                    "type": "string"
+                  },
+                  "isCustomShardKeyHashed": {
+                    "type": "boolean"
+                  },
+                  "isShardKeyUnique": {
+                    "type": "boolean"
+                  },
+                  "numInitialChunks": {
+                    "type": "integer"
+                  },
+                  "presplitHashedZones": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "collection",
+                  "db"
                 ],
                 "type": "object",
                 "additionalProperties": false
@@ -551,6 +659,9 @@
             "noTableScan": {
               "type": "boolean"
             },
+            "oplogMinRetentionHours": {
+              "type": "string"
+            },
             "oplogSizeMB": {
               "format": "int64",
               "type": "integer"
@@ -592,6 +703,27 @@
               "description": "Name of the serverless deployment as it appears in Atlas. After Atlas creates the deployment, you can't change its name. Can only contain ASCII letters, numbers, and hyphens.",
               "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]*$",
               "type": "string"
+            },
+            "privateEndpoints": {
+              "items": {
+                "properties": {
+                  "cloudProviderEndpointID": {
+                    "description": "CloudProviderEndpointID is the identifier of the cloud provider endpoint.",
+                    "type": "string"
+                  },
+                  "name": {
+                    "description": "Name is the name of the Serverless PrivateLink Service. Should be unique.",
+                    "type": "string"
+                  },
+                  "privateEndpointIpAddress": {
+                    "description": "PrivateEndpointIPAddress is the IPv4 address of the private endpoint in your Azure VNet that someone added to this private endpoint service.",
+                    "type": "string"
+                  }
+                },
+                "type": "object",
+                "additionalProperties": false
+              },
+              "type": "array"
             },
             "providerSettings": {
               "description": "Configuration for the provisioned hosts on which MongoDB runs. The available options are specific to the cloud service provider.",
@@ -817,6 +949,64 @@
           "type": "object",
           "additionalProperties": false
         },
+        "customZoneMapping": {
+          "properties": {
+            "customZoneMapping": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "zoneMappingErrMessage": {
+              "type": "string"
+            },
+            "zoneMappingState": {
+              "type": "string"
+            }
+          },
+          "type": "object",
+          "additionalProperties": false
+        },
+        "managedNamespaces": {
+          "items": {
+            "properties": {
+              "collection": {
+                "type": "string"
+              },
+              "customShardKey": {
+                "type": "string"
+              },
+              "db": {
+                "type": "string"
+              },
+              "errMessage": {
+                "type": "string"
+              },
+              "isCustomShardKeyHashed": {
+                "type": "boolean"
+              },
+              "isShardKeyUnique": {
+                "type": "boolean"
+              },
+              "numInitialChunks": {
+                "type": "integer"
+              },
+              "presplitHashedZones": {
+                "type": "boolean"
+              },
+              "status": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "collection",
+              "db"
+            ],
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
+        },
         "mongoDBVersion": {
           "description": "MongoDBVersion is the version of MongoDB the cluster runs, in <major version>.<minor version> format.",
           "type": "string"
@@ -829,6 +1019,51 @@
           "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of. The Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
+        },
+        "serverlessPrivateEndpoints": {
+          "items": {
+            "properties": {
+              "_id": {
+                "description": "ID is the identifier of the Serverless PrivateLink Service.",
+                "type": "string"
+              },
+              "cloudProviderEndpointId": {
+                "description": "CloudProviderEndpointID is the identifier of the cloud provider endpoint.",
+                "type": "string"
+              },
+              "endpointServiceName": {
+                "description": "EndpointServiceName is the name of the PrivateLink endpoint service in AWS. Returns null while the endpoint service is being created.",
+                "type": "string"
+              },
+              "errorMessage": {
+                "description": "ErrorMessage is the error message if the Serverless PrivateLink Service failed to create or connect.",
+                "type": "string"
+              },
+              "name": {
+                "description": "Name is the name of the Serverless PrivateLink Service. Should be unique.",
+                "type": "string"
+              },
+              "privateEndpointIpAddress": {
+                "description": "PrivateEndpointIPAddress is the IPv4 address of the private endpoint in your Azure VNet that someone added to this private endpoint service.",
+                "type": "string"
+              },
+              "privateLinkServiceResourceId": {
+                "description": "PrivateLinkServiceResourceID is the root-relative path that identifies the Azure Private Link Service that MongoDB Cloud manages. MongoDB Cloud returns null while it creates the endpoint service.",
+                "type": "string"
+              },
+              "providerName": {
+                "description": "ProviderName is human-readable label that identifies the cloud provider. Values include AWS or AZURE.",
+                "type": "string"
+              },
+              "status": {
+                "description": "Status of the AWS Serverless PrivateLink connection.",
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
         },
         "stateName": {
           "description": "StateName is the current state of the cluster. The possible states are: IDLE, CREATING, UPDATING, DELETING, DELETED, REPAIRING",
