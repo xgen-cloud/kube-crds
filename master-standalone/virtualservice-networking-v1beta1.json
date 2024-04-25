@@ -32,10 +32,12 @@
                 "description": "Cross-Origin Resource Sharing policy (CORS).",
                 "properties": {
                   "allowCredentials": {
+                    "description": "Indicates whether the caller is allowed to send the actual request (not the preflight) using credentials.",
                     "nullable": true,
                     "type": "boolean"
                   },
                   "allowHeaders": {
+                    "description": "List of HTTP headers that can be used when requesting the resource.",
                     "items": {
                       "type": "string"
                     },
@@ -49,7 +51,6 @@
                     "type": "array"
                   },
                   "allowOrigin": {
-                    "description": "The list of origins that are allowed to perform CORS requests.",
                     "items": {
                       "type": "string"
                     },
@@ -114,12 +115,14 @@
                     "type": "array"
                   },
                   "exposeHeaders": {
+                    "description": "A list of HTTP headers that the browsers are allowed to access.",
                     "items": {
                       "type": "string"
                     },
                     "type": "array"
                   },
                   "maxAge": {
+                    "description": "Specifies how long the results of a preflight request can be cached.",
                     "type": "string"
                   }
                 },
@@ -127,6 +130,7 @@
                 "additionalProperties": false
               },
               "delegate": {
+                "description": "Delegate is used to specify the particular VirtualService which can be used to define delegate HTTPRoute.",
                 "properties": {
                   "name": {
                     "description": "Name specifies the name of the delegate VirtualService.",
@@ -140,10 +144,68 @@
                 "type": "object",
                 "additionalProperties": false
               },
+              "directResponse": {
+                "description": "A HTTP rule can either return a direct_response, redirect or forward (default) traffic.",
+                "properties": {
+                  "body": {
+                    "description": "Specifies the content of the response body.",
+                    "oneOf": [
+                      {
+                        "not": {
+                          "anyOf": [
+                            {
+                              "required": [
+                                "string"
+                              ]
+                            },
+                            {
+                              "required": [
+                                "bytes"
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "required": [
+                          "string"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "bytes"
+                        ]
+                      }
+                    ],
+                    "properties": {
+                      "bytes": {
+                        "description": "response body as base64 encoded bytes.",
+                        "format": "binary",
+                        "type": "string"
+                      },
+                      "string": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object",
+                    "additionalProperties": false
+                  },
+                  "status": {
+                    "description": "Specifies the HTTP response status to be returned.",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "status"
+                ],
+                "type": "object",
+                "additionalProperties": false
+              },
               "fault": {
                 "description": "Fault injection policy to apply on HTTP traffic at the client side.",
                 "properties": {
                   "abort": {
+                    "description": "Abort Http request attempts and return error codes back to downstream service, giving the impression that the upstream service is faulty.",
                     "oneOf": [
                       {
                         "not": {
@@ -184,6 +246,7 @@
                     ],
                     "properties": {
                       "grpcStatus": {
+                        "description": "GRPC status code to use to abort the request.",
                         "type": "string"
                       },
                       "http2Error": {
@@ -210,6 +273,7 @@
                     "additionalProperties": false
                   },
                   "delay": {
+                    "description": "Delay requests before forwarding, emulating various failures such as network issues, overloaded upstream service, etc.",
                     "oneOf": [
                       {
                         "not": {
@@ -325,9 +389,11 @@
                 "additionalProperties": false
               },
               "match": {
+                "description": "Match conditions to be satisfied for the rule to be activated.",
                 "items": {
                   "properties": {
                     "authority": {
+                      "description": "HTTP Authority values are case-sensitive and formatted as follows: - `exact: \"value\"` for exact string match - `prefix: \"value\"` for prefix-based match - `regex: \"value\"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).",
                       "oneOf": [
                         {
                           "not": {
@@ -443,6 +509,7 @@
                         "type": "object",
                         "additionalProperties": false
                       },
+                      "description": "The header keys must be lowercase and use hyphen as the separator, e.g.",
                       "type": "object"
                     },
                     "ignoreUriCase": {
@@ -450,6 +517,7 @@
                       "type": "boolean"
                     },
                     "method": {
+                      "description": "HTTP Method values are case-sensitive and formatted as follows: - `exact: \"value\"` for exact string match - `prefix: \"value\"` for prefix-based match - `regex: \"value\"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).",
                       "oneOf": [
                         {
                           "not": {
@@ -570,6 +638,7 @@
                       "type": "object"
                     },
                     "scheme": {
+                      "description": "URI Scheme values are case-sensitive and formatted as follows: - `exact: \"value\"` for exact string match - `prefix: \"value\"` for prefix-based match - `regex: \"value\"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).",
                       "oneOf": [
                         {
                           "not": {
@@ -627,13 +696,19 @@
                       "additionalProperties": {
                         "type": "string"
                       },
+                      "description": "One or more labels that constrain the applicability of a rule to source (client) workloads with the given labels.",
                       "type": "object"
                     },
                     "sourceNamespace": {
                       "description": "Source namespace constraining the applicability of a rule to workloads in that namespace.",
                       "type": "string"
                     },
+                    "statPrefix": {
+                      "description": "The human readable prefix to use when emitting statistics for this route.",
+                      "type": "string"
+                    },
                     "uri": {
+                      "description": "URI to match values are case-sensitive and formatted as follows: - `exact: \"value\"` for exact string match - `prefix: \"value\"` for prefix-based match - `regex: \"value\"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).",
                       "oneOf": [
                         {
                           "not": {
@@ -752,6 +827,7 @@
                 "type": "array"
               },
               "mirror": {
+                "description": "Mirror HTTP traffic to a another destination in addition to forwarding the requests to the intended destination.",
                 "properties": {
                   "host": {
                     "description": "The name of a service from the service registry.",
@@ -772,16 +848,17 @@
                     "type": "string"
                   }
                 },
+                "required": [
+                  "host"
+                ],
                 "type": "object",
                 "additionalProperties": false
               },
               "mirror_percent": {
-                "description": "Percentage of the traffic to be mirrored by the `mirror` field.",
                 "nullable": true,
                 "type": "integer"
               },
               "mirrorPercent": {
-                "description": "Percentage of the traffic to be mirrored by the `mirror` field.",
                 "nullable": true,
                 "type": "integer"
               },
@@ -796,20 +873,119 @@
                 "type": "object",
                 "additionalProperties": false
               },
+              "mirrors": {
+                "description": "Specifies the destinations to mirror HTTP traffic in addition to the original destination.",
+                "items": {
+                  "properties": {
+                    "destination": {
+                      "description": "Destination specifies the target of the mirror operation.",
+                      "properties": {
+                        "host": {
+                          "description": "The name of a service from the service registry.",
+                          "type": "string"
+                        },
+                        "port": {
+                          "description": "Specifies the port on the host that is being addressed.",
+                          "properties": {
+                            "number": {
+                              "type": "integer"
+                            }
+                          },
+                          "type": "object",
+                          "additionalProperties": false
+                        },
+                        "subset": {
+                          "description": "The name of a subset within the service.",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "host"
+                      ],
+                      "type": "object",
+                      "additionalProperties": false
+                    },
+                    "percentage": {
+                      "description": "Percentage of the traffic to be mirrored by the `destination` field.",
+                      "properties": {
+                        "value": {
+                          "format": "double",
+                          "type": "number"
+                        }
+                      },
+                      "type": "object",
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "destination"
+                  ],
+                  "type": "object",
+                  "additionalProperties": false
+                },
+                "type": "array"
+              },
               "name": {
                 "description": "The name assigned to the route for debugging purposes.",
                 "type": "string"
               },
               "redirect": {
-                "description": "A HTTP rule can either redirect or forward (default) traffic.",
+                "description": "A HTTP rule can either return a direct_response, redirect or forward (default) traffic.",
+                "oneOf": [
+                  {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "port"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "derivePort"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "required": [
+                      "port"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "derivePort"
+                    ]
+                  }
+                ],
                 "properties": {
                   "authority": {
+                    "description": "On a redirect, overwrite the Authority/Host portion of the URL with this value.",
                     "type": "string"
                   },
-                  "redirectCode": {
+                  "derivePort": {
+                    "description": "On a redirect, dynamically set the port: * FROM_PROTOCOL_DEFAULT: automatically set to 80 for HTTP and 443 for HTTPS.",
+                    "enum": [
+                      "FROM_PROTOCOL_DEFAULT",
+                      "FROM_REQUEST_PORT"
+                    ],
+                    "type": "string"
+                  },
+                  "port": {
+                    "description": "On a redirect, overwrite the port portion of the URL with this value.",
                     "type": "integer"
                   },
+                  "redirectCode": {
+                    "description": "On a redirect, Specifies the HTTP status code to use in the redirect response.",
+                    "type": "integer"
+                  },
+                  "scheme": {
+                    "description": "On a redirect, overwrite the scheme portion of the URL with this value.",
+                    "type": "string"
+                  },
                   "uri": {
+                    "description": "On a redirect, overwrite the Path portion of the URL with this value.",
                     "type": "string"
                   }
                 },
@@ -849,17 +1025,34 @@
                     "type": "string"
                   },
                   "uri": {
+                    "description": "rewrite the path (or the prefix) portion of the URI with this value.",
                     "type": "string"
+                  },
+                  "uriRegexRewrite": {
+                    "description": "rewrite the path portion of the URI with the specified regex.",
+                    "properties": {
+                      "match": {
+                        "description": "RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).",
+                        "type": "string"
+                      },
+                      "rewrite": {
+                        "description": "The string that should replace into matching portions of original URI.",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object",
+                    "additionalProperties": false
                   }
                 },
                 "type": "object",
                 "additionalProperties": false
               },
               "route": {
-                "description": "A HTTP rule can either redirect or forward (default) traffic.",
+                "description": "A HTTP rule can either return a direct_response, redirect or forward (default) traffic.",
                 "items": {
                   "properties": {
                     "destination": {
+                      "description": "Destination uniquely identifies the instances of a service to which the request/connection should be forwarded to.",
                       "properties": {
                         "host": {
                           "description": "The name of a service from the service registry.",
@@ -880,6 +1073,9 @@
                           "type": "string"
                         }
                       },
+                      "required": [
+                        "host"
+                      ],
                       "type": "object",
                       "additionalProperties": false
                     },
@@ -938,10 +1134,14 @@
                       "additionalProperties": false
                     },
                     "weight": {
+                      "description": "Weight specifies the relative proportion of traffic to be forwarded to the destination.",
                       "format": "int32",
                       "type": "integer"
                     }
                   },
+                  "required": [
+                    "destination"
+                  ],
                   "type": "object",
                   "additionalProperties": false
                 },
@@ -962,6 +1162,7 @@
           "items": {
             "properties": {
               "match": {
+                "description": "Match conditions to be satisfied for the rule to be activated.",
                 "items": {
                   "properties": {
                     "destinationSubnets": {
@@ -986,6 +1187,7 @@
                       "additionalProperties": {
                         "type": "string"
                       },
+                      "description": "One or more labels that constrain the applicability of a rule to workloads with the given labels.",
                       "type": "object"
                     },
                     "sourceNamespace": {
@@ -993,7 +1195,6 @@
                       "type": "string"
                     },
                     "sourceSubnet": {
-                      "description": "IPv4 or IPv6 ip address of source with optional subnet.",
                       "type": "string"
                     }
                   },
@@ -1007,6 +1208,7 @@
                 "items": {
                   "properties": {
                     "destination": {
+                      "description": "Destination uniquely identifies the instances of a service to which the request/connection should be forwarded to.",
                       "properties": {
                         "host": {
                           "description": "The name of a service from the service registry.",
@@ -1027,14 +1229,21 @@
                           "type": "string"
                         }
                       },
+                      "required": [
+                        "host"
+                      ],
                       "type": "object",
                       "additionalProperties": false
                     },
                     "weight": {
+                      "description": "Weight specifies the relative proportion of traffic to be forwarded to the destination.",
                       "format": "int32",
                       "type": "integer"
                     }
                   },
+                  "required": [
+                    "destination"
+                  ],
                   "type": "object",
                   "additionalProperties": false
                 },
@@ -1047,9 +1256,11 @@
           "type": "array"
         },
         "tls": {
+          "description": "An ordered list of route rule for non-terminated TLS & HTTPS traffic.",
           "items": {
             "properties": {
               "match": {
+                "description": "Match conditions to be satisfied for the rule to be activated.",
                 "items": {
                   "properties": {
                     "destinationSubnets": {
@@ -1081,6 +1292,7 @@
                       "additionalProperties": {
                         "type": "string"
                       },
+                      "description": "One or more labels that constrain the applicability of a rule to workloads with the given labels.",
                       "type": "object"
                     },
                     "sourceNamespace": {
@@ -1088,6 +1300,9 @@
                       "type": "string"
                     }
                   },
+                  "required": [
+                    "sniHosts"
+                  ],
                   "type": "object",
                   "additionalProperties": false
                 },
@@ -1098,6 +1313,7 @@
                 "items": {
                   "properties": {
                     "destination": {
+                      "description": "Destination uniquely identifies the instances of a service to which the request/connection should be forwarded to.",
                       "properties": {
                         "host": {
                           "description": "The name of a service from the service registry.",
@@ -1118,20 +1334,30 @@
                           "type": "string"
                         }
                       },
+                      "required": [
+                        "host"
+                      ],
                       "type": "object",
                       "additionalProperties": false
                     },
                     "weight": {
+                      "description": "Weight specifies the relative proportion of traffic to be forwarded to the destination.",
                       "format": "int32",
                       "type": "integer"
                     }
                   },
+                  "required": [
+                    "destination"
+                  ],
                   "type": "object",
                   "additionalProperties": false
                 },
                 "type": "array"
               }
             },
+            "required": [
+              "match"
+            ],
             "type": "object",
             "additionalProperties": false
           },
