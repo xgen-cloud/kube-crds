@@ -91,9 +91,45 @@
                       "description": "Slack API token or Bot token. Populated for the SLACK notifications type. If the token later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
                       "type": "string"
                     },
+                    "apiTokenRef": {
+                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "properties": {
+                        "name": {
+                          "description": "Name is the name of the Kubernetes Resource",
+                          "type": "string"
+                        },
+                        "namespace": {
+                          "description": "Namespace is the namespace of the Kubernetes Resource",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object",
+                      "additionalProperties": false
+                    },
                     "channelName": {
                       "description": "Slack channel name. Populated for the SLACK notifications type.",
                       "type": "string"
+                    },
+                    "datadogAPIKeyRef": {
+                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "properties": {
+                        "name": {
+                          "description": "Name is the name of the Kubernetes Resource",
+                          "type": "string"
+                        },
+                        "namespace": {
+                          "description": "Namespace is the namespace of the Kubernetes Resource",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object",
+                      "additionalProperties": false
                     },
                     "datadogApiKey": {
                       "description": "Datadog API Key. Found in the Datadog dashboard. Populated for the DATADOG notifications type.",
@@ -123,6 +159,24 @@
                       "description": "The Flowdock personal API token. Populated for the FLOWDOCK notifications type. If the token later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
                       "type": "string"
                     },
+                    "flowdockApiTokenRef": {
+                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "properties": {
+                        "name": {
+                          "description": "Name is the name of the Kubernetes Resource",
+                          "type": "string"
+                        },
+                        "namespace": {
+                          "description": "Namespace is the namespace of the Kubernetes Resource",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object",
+                      "additionalProperties": false
+                    },
                     "intervalMin": {
                       "description": "Number of minutes to wait between successive notifications for unacknowledged alerts that are not resolved.",
                       "type": "integer"
@@ -134,6 +188,24 @@
                     "opsGenieApiKey": {
                       "description": "Opsgenie API Key. Populated for the OPS_GENIE notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
                       "type": "string"
+                    },
+                    "opsGenieApiKeyRef": {
+                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "properties": {
+                        "name": {
+                          "description": "Name is the name of the Kubernetes Resource",
+                          "type": "string"
+                        },
+                        "namespace": {
+                          "description": "Namespace is the namespace of the Kubernetes Resource",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object",
+                      "additionalProperties": false
                     },
                     "opsGenieRegion": {
                       "description": "Region that indicates which API URL to use.",
@@ -153,6 +225,24 @@
                     "serviceKey": {
                       "description": "PagerDuty service key. Populated for the PAGER_DUTY notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the key.",
                       "type": "string"
+                    },
+                    "serviceKeyRef": {
+                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "properties": {
+                        "name": {
+                          "description": "Name is the name of the Kubernetes Resource",
+                          "type": "string"
+                        },
+                        "namespace": {
+                          "description": "Namespace is the namespace of the Kubernetes Resource",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object",
+                      "additionalProperties": false
                     },
                     "smsEnabled": {
                       "description": "Flag indicating if text message notifications should be sent. Populated for ORG, GROUP, and USER notifications types.",
@@ -181,6 +271,24 @@
                     "victorOpsRoutingKey": {
                       "description": "VictorOps routing key. Populated for the VICTOR_OPS notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the key.",
                       "type": "string"
+                    },
+                    "victorOpsSecretRef": {
+                      "description": "Secret for VictorOps should contain both APIKey and RoutingKey values",
+                      "properties": {
+                        "name": {
+                          "description": "Name is the name of the Kubernetes Resource",
+                          "type": "string"
+                        },
+                        "namespace": {
+                          "description": "Namespace is the namespace of the Kubernetes Resource",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object",
+                      "additionalProperties": false
                     }
                   },
                   "type": "object",
@@ -374,6 +482,24 @@
                 "secretAccessKey": {
                   "type": "string"
                 },
+                "secretRef": {
+                  "description": "A reference to as Secret containing the AccessKeyID, SecretAccessKey, CustomerMasterKey and RoleID fields",
+                  "properties": {
+                    "name": {
+                      "description": "Name is the name of the Kubernetes Resource",
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "description": "Namespace is the namespace of the Kubernetes Resource",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "type": "object",
+                  "additionalProperties": false
+                },
                 "valid": {
                   "type": "boolean"
                 }
@@ -405,6 +531,24 @@
                 "secret": {
                   "type": "string"
                 },
+                "secretRef": {
+                  "description": "A reference to as Secret containing the SubscriptionID, KeyVaultName, KeyIdentifier, Secret fields",
+                  "properties": {
+                    "name": {
+                      "description": "Name is the name of the Kubernetes Resource",
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "description": "Namespace is the namespace of the Kubernetes Resource",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "type": "object",
+                  "additionalProperties": false
+                },
                 "subscriptionID": {
                   "type": "string"
                 },
@@ -423,6 +567,24 @@
                 },
                 "keyVersionResourceID": {
                   "type": "string"
+                },
+                "secretRef": {
+                  "description": "A reference to as Secret containing the ServiceAccountKey, KeyVersionResourceID fields",
+                  "properties": {
+                    "name": {
+                      "description": "Name is the name of the Kubernetes Resource",
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "description": "Namespace is the namespace of the Kubernetes Resource",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "type": "object",
+                  "additionalProperties": false
                 },
                 "serviceAccountKey": {
                   "type": "string"
@@ -855,6 +1017,16 @@
           },
           "type": "array"
         },
+        "regionUsageRestrictions": {
+          "default": "NONE",
+          "description": "RegionUsageRestrictions designate the project's AWS region when using Atlas for Government. This parameter should not be used with commercial Atlas. In Atlas for Government, not setting this field (defaulting to NONE) means the project is restricted to COMMERCIAL_FEDRAMP_REGIONS_ONLY",
+          "enum": [
+            "NONE",
+            "GOV_REGIONS_ONLY",
+            "COMMERCIAL_FEDRAMP_REGIONS_ONLY"
+          ],
+          "type": "string"
+        },
         "settings": {
           "description": "Settings allow to set Project Settings for the project",
           "properties": {
@@ -862,6 +1034,9 @@
               "type": "boolean"
             },
             "isDataExplorerEnabled": {
+              "type": "boolean"
+            },
+            "isExtendedStorageSizesEnabled": {
               "type": "boolean"
             },
             "isPerformanceAdvisorEnabled": {
