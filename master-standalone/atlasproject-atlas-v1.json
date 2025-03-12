@@ -2,11 +2,11 @@
   "description": "AtlasProject is the Schema for the atlasprojects API",
   "properties": {
     "apiVersion": {
-      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
       "type": "string"
     },
     "kind": {
-      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
       "type": "string"
     },
     "metadata": {
@@ -16,7 +16,7 @@
       "description": "AtlasProjectSpec defines the desired state of Project in Atlas",
       "properties": {
         "alertConfigurationSyncEnabled": {
-          "description": "AlertConfigurationSyncEnabled is a flag that enables/disables Alert Configurations sync for the current Project. If true - project alert configurations will be synced according to AlertConfigurations. If not - alert configurations will not be modified by the operator. They can be managed through API, cli, UI.",
+          "description": "AlertConfigurationSyncEnabled is a flag that enables/disables Alert Configurations sync for the current Project.\nIf true - project alert configurations will be synced according to AlertConfigurations.\nIf not - alert configurations will not be modified by the operator. They can be managed through API, cli, UI.",
           "type": "boolean"
         },
         "alertConfigurations": {
@@ -87,12 +87,8 @@
                 "description": "Notifications are sending when an alert condition is detected.",
                 "items": {
                   "properties": {
-                    "apiToken": {
-                      "description": "Slack API token or Bot token. Populated for the SLACK notifications type. If the token later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
-                      "type": "string"
-                    },
                     "apiTokenRef": {
-                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "description": "Secret containing a Slack API token or Bot token. Populated for the SLACK notifications type. If the token later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
                       "properties": {
                         "name": {
                           "description": "Name is the name of the Kubernetes Resource",
@@ -114,7 +110,7 @@
                       "type": "string"
                     },
                     "datadogAPIKeyRef": {
-                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "description": "Secret containing a Datadog API Key. Found in the Datadog dashboard. Populated for the DATADOG notifications type.",
                       "properties": {
                         "name": {
                           "description": "Name is the name of the Kubernetes Resource",
@@ -130,10 +126,6 @@
                       ],
                       "type": "object",
                       "additionalProperties": false
-                    },
-                    "datadogApiKey": {
-                      "description": "Datadog API Key. Found in the Datadog dashboard. Populated for the DATADOG notifications type.",
-                      "type": "string"
                     },
                     "datadogRegion": {
                       "description": "Region that indicates which API URL to use",
@@ -152,15 +144,11 @@
                       "type": "boolean"
                     },
                     "flowName": {
-                      "description": "Flowdock flow namse in lower-case letters.",
-                      "type": "string"
-                    },
-                    "flowdockApiToken": {
-                      "description": "The Flowdock personal API token. Populated for the FLOWDOCK notifications type. If the token later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
+                      "description": "Flowdock flow name in lower-case letters.",
                       "type": "string"
                     },
                     "flowdockApiTokenRef": {
-                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "description": "The Flowdock personal API token. Populated for the FLOWDOCK notifications type. If the token later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
                       "properties": {
                         "name": {
                           "description": "Name is the name of the Kubernetes Resource",
@@ -185,12 +173,8 @@
                       "description": "Mobile number to which alert notifications are sent. Populated for the SMS notifications type.",
                       "type": "string"
                     },
-                    "opsGenieApiKey": {
-                      "description": "Opsgenie API Key. Populated for the OPS_GENIE notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
-                      "type": "string"
-                    },
                     "opsGenieApiKeyRef": {
-                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "description": "OpsGenie API Key. Populated for the OPS_GENIE notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the token.",
                       "properties": {
                         "name": {
                           "description": "Name is the name of the Kubernetes Resource",
@@ -222,12 +206,8 @@
                       },
                       "type": "array"
                     },
-                    "serviceKey": {
-                      "description": "PagerDuty service key. Populated for the PAGER_DUTY notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the key.",
-                      "type": "string"
-                    },
                     "serviceKeyRef": {
-                      "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
+                      "description": "PagerDuty service key. Populated for the PAGER_DUTY notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the key.",
                       "properties": {
                         "name": {
                           "description": "Name is the name of the Kubernetes Resource",
@@ -264,16 +244,8 @@
                       "description": "Name of the Atlas user to which to send notifications. Only a user in the project that owns the alert configuration is allowed here. Populated for the USER notifications type.",
                       "type": "string"
                     },
-                    "victorOpsApiKey": {
-                      "description": "VictorOps API key. Populated for the VICTOR_OPS notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the key.",
-                      "type": "string"
-                    },
-                    "victorOpsRoutingKey": {
-                      "description": "VictorOps routing key. Populated for the VICTOR_OPS notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the key.",
-                      "type": "string"
-                    },
                     "victorOpsSecretRef": {
-                      "description": "Secret for VictorOps should contain both APIKey and RoutingKey values",
+                      "description": "Secret containing a VictorOps API key and Routing key. Populated for the VICTOR_OPS notifications type. If the key later becomes invalid, Atlas sends an email to the project owner and eventually removes the key.",
                       "properties": {
                         "name": {
                           "description": "Name is the name of the Kubernetes Resource",
@@ -340,9 +312,50 @@
           "type": "object",
           "additionalProperties": false
         },
+        "backupCompliancePolicyRef": {
+          "description": "BackupCompliancePolicyRef is a reference to the backup compliance CR.",
+          "properties": {
+            "name": {
+              "description": "Name is the name of the Kubernetes Resource",
+              "type": "string"
+            },
+            "namespace": {
+              "description": "Namespace is the namespace of the Kubernetes Resource",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
         "cloudProviderAccessRoles": {
-          "description": "CloudProviderAccessRoles is a list of Cloud Provider Access Roles configured for the current Project.",
+          "description": "CloudProviderAccessRoles is a list of Cloud Provider Access Roles configured for the current Project.\nDeprecated: This configuration was deprecated in favor of CloudProviderIntegrations",
           "items": {
+            "description": "CloudProviderAccessRole define an integration to a cloud provider\nDeprecated: This type is deprecated in favor of CloudProviderIntegration",
+            "properties": {
+              "iamAssumedRoleArn": {
+                "description": "IamAssumedRoleArn is the ARN of the IAM role that is assumed by the Atlas cluster.",
+                "type": "string"
+              },
+              "providerName": {
+                "description": "ProviderName is the name of the cloud provider. Currently only AWS is supported.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "providerName"
+            ],
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
+        },
+        "cloudProviderIntegrations": {
+          "description": "CloudProviderIntegrations is a list of Cloud Provider Integration configured for the current Project.",
+          "items": {
+            "description": "CloudProviderIntegration define an integration to a cloud provider",
             "properties": {
               "iamAssumedRoleArn": {
                 "description": "IamAssumedRoleArn is the ARN of the IAM role that is assumed by the Atlas cluster.",
@@ -362,7 +375,7 @@
           "type": "array"
         },
         "connectionSecretRef": {
-          "description": "ConnectionSecret is the name of the Kubernetes Secret which contains the information about the way to connect to Atlas (organization ID, API keys). The default Operator connection configuration will be used if not provided.",
+          "description": "ConnectionSecret is the name of the Kubernetes Secret which contains the information about the way to connect to\nAtlas (organization ID, API keys). The default Operator connection configuration will be used if not provided.",
           "properties": {
             "name": {
               "description": "Name is the name of the Kubernetes Resource",
@@ -464,26 +477,14 @@
             "awsKms": {
               "description": "AwsKms specifies AWS KMS configuration details and whether Encryption at Rest is enabled for an Atlas project.",
               "properties": {
-                "accessKeyID": {
-                  "type": "string"
-                },
-                "customerMasterKeyID": {
-                  "type": "string"
-                },
                 "enabled": {
                   "type": "boolean"
                 },
                 "region": {
                   "type": "string"
                 },
-                "roleId": {
-                  "type": "string"
-                },
-                "secretAccessKey": {
-                  "type": "string"
-                },
                 "secretRef": {
-                  "description": "A reference to as Secret containing the AccessKeyID, SecretAccessKey, CustomerMasterKey and RoleID fields",
+                  "description": "A reference to as Secret containing the AccessKeyID, SecretAccessKey, CustomerMasterKeyID and RoleID fields",
                   "properties": {
                     "name": {
                       "description": "Name is the name of the Kubernetes Resource",
@@ -519,16 +520,7 @@
                 "enabled": {
                   "type": "boolean"
                 },
-                "keyIdentifier": {
-                  "type": "string"
-                },
-                "keyVaultName": {
-                  "type": "string"
-                },
                 "resourceGroupName": {
-                  "type": "string"
-                },
-                "secret": {
                   "type": "string"
                 },
                 "secretRef": {
@@ -549,9 +541,6 @@
                   "type": "object",
                   "additionalProperties": false
                 },
-                "subscriptionID": {
-                  "type": "string"
-                },
                 "tenantID": {
                   "type": "string"
                 }
@@ -564,9 +553,6 @@
               "properties": {
                 "enabled": {
                   "type": "boolean"
-                },
-                "keyVersionResourceID": {
-                  "type": "string"
                 },
                 "secretRef": {
                   "description": "A reference to as Secret containing the ServiceAccountKey, KeyVersionResourceID fields",
@@ -585,9 +571,6 @@
                   ],
                   "type": "object",
                   "additionalProperties": false
-                },
-                "serviceAccountKey": {
-                  "type": "string"
                 }
               },
               "type": "object",
@@ -825,30 +808,30 @@
           "type": "array"
         },
         "maintenanceWindow": {
-          "description": "MaintenanceWindow allows to specify a preferred time in the week to run maintenance operations. See more information at https://www.mongodb.com/docs/atlas/reference/api/maintenance-windows/",
+          "description": "MaintenanceWindow allows to specify a preferred time in the week to run maintenance operations. See more\ninformation at https://www.mongodb.com/docs/atlas/reference/api/maintenance-windows/",
           "properties": {
             "autoDefer": {
               "description": "Flag indicating whether any scheduled project maintenance should be deferred automatically for one week.",
               "type": "boolean"
             },
             "dayOfWeek": {
-              "description": "Day of the week when you would like the maintenance window to start as a 1-based integer. Sunday 1, Monday 2, Tuesday 3, Wednesday 4, Thursday 5, Friday 6, Saturday 7",
+              "description": "Day of the week when you would like the maintenance window to start as a 1-based integer.\nSunday 1, Monday 2, Tuesday 3, Wednesday 4, Thursday 5, Friday 6, Saturday 7",
               "maximum": 7,
               "minimum": 1,
               "type": "integer"
             },
             "defer": {
-              "description": "Flag indicating whether the next scheduled project maintenance should be deferred for one week. Cannot be specified if startASAP is true",
+              "description": "Flag indicating whether the next scheduled project maintenance should be deferred for one week.\nCannot be specified if startASAP is true",
               "type": "boolean"
             },
             "hourOfDay": {
-              "description": "Hour of the day when you would like the maintenance window to start. This parameter uses the 24-hour clock, where midnight is 0, noon is 12.",
+              "description": "Hour of the day when you would like the maintenance window to start.\nThis parameter uses the 24-hour clock, where midnight is 0, noon is 12.",
               "maximum": 23,
               "minimum": 0,
               "type": "integer"
             },
             "startASAP": {
-              "description": "Flag indicating whether project maintenance has been directed to start immediately. Cannot be specified if defer is true",
+              "description": "Flag indicating whether project maintenance has been directed to start immediately.\nCannot be specified if defer is true",
               "type": "boolean"
             }
           },
@@ -988,7 +971,7 @@
           "type": "array"
         },
         "projectIpAccessList": {
-          "description": "ProjectIPAccessList allows to enable the IP Access List for the Project. See more information at https://docs.atlas.mongodb.com/reference/api/ip-access-list/add-entries-to-access-list/",
+          "description": "ProjectIPAccessList allows to enable the IP Access List for the Project. See more information at\nhttps://docs.atlas.mongodb.com/reference/api/ip-access-list/add-entries-to-access-list/",
           "items": {
             "properties": {
               "awsSecurityGroup": {
@@ -1019,7 +1002,7 @@
         },
         "regionUsageRestrictions": {
           "default": "NONE",
-          "description": "RegionUsageRestrictions designate the project's AWS region when using Atlas for Government. This parameter should not be used with commercial Atlas. In Atlas for Government, not setting this field (defaulting to NONE) means the project is restricted to COMMERCIAL_FEDRAMP_REGIONS_ONLY",
+          "description": "RegionUsageRestrictions designate the project's AWS region when using Atlas for Government.\nThis parameter should not be used with commercial Atlas.\nIn Atlas for Government, not setting this field (defaulting to NONE) means the project is restricted to COMMERCIAL_FEDRAMP_REGIONS_ONLY",
           "enum": [
             "NONE",
             "GOV_REGIONS_ONLY",
@@ -1419,14 +1402,14 @@
           "type": "array"
         },
         "authModes": {
-          "description": "AuthModes contains a list of configured authentication modes \"SCRAM\" is default authentication method and requires a password for each user \"X509\" signifies that self-managed X.509 authentication is configured",
+          "description": "AuthModes contains a list of configured authentication modes\n\"SCRAM\" is default authentication method and requires a password for each user\n\"X509\" signifies that self-managed X.509 authentication is configured",
           "items": {
             "type": "string"
           },
           "type": "array"
         },
-        "cloudProviderAccessRoles": {
-          "description": "CloudProviderAccessRoles contains a list of configured cloud provider access roles. AWS support only",
+        "cloudProviderIntegrations": {
+          "description": "CloudProviderIntegrations contains a list of configured cloud provider access roles. AWS support only",
           "items": {
             "properties": {
               "atlasAWSAccountArn": {
@@ -1544,7 +1527,7 @@
           "type": "array"
         },
         "expiredIpAccessList": {
-          "description": "The list of IP Access List entries that are expired due to 'deleteAfterDate' being less than the current date. Note, that this field is updated by the Atlas Operator only after specification changes",
+          "description": "The list of IP Access List entries that are expired due to 'deleteAfterDate' being less than the current date.\nNote, that this field is updated by the Atlas Operator only after specification changes",
           "items": {
             "properties": {
               "awsSecurityGroup": {
@@ -1634,7 +1617,7 @@
                 "type": "string"
               },
               "vpc": {
-                "description": "VPC is general purpose field for storing the name of the VPC. VPC is vpcID for AWS, user networkName for GCP, and vnetName for Azure.",
+                "description": "VPC is general purpose field for storing the name of the VPC.\nVPC is vpcID for AWS, user networkName for GCP, and vnetName for Azure.",
                 "type": "string"
               }
             },
@@ -1649,7 +1632,7 @@
           "type": "array"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of. The Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         },
@@ -1723,7 +1706,7 @@
           "type": "array"
         },
         "prometheus": {
-          "description": "Prometheus contains the status for Prometheus integration including the prometheusDiscoveryURL",
+          "description": "Prometheus contains the status for Prometheus integration\nincluding the prometheusDiscoveryURL",
           "properties": {
             "prometheusDiscoveryURL": {
               "type": "string"

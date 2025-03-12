@@ -2,11 +2,11 @@
   "description": "AtlasDatabaseUser is the Schema for the Atlas Database User API",
   "properties": {
     "apiVersion": {
-      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
       "type": "string"
     },
     "kind": {
-      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
       "type": "string"
     },
     "metadata": {
@@ -15,17 +15,55 @@
     "spec": {
       "description": "AtlasDatabaseUserSpec defines the desired state of Database User in Atlas",
       "properties": {
+        "awsIamType": {
+          "default": "NONE",
+          "description": "Human-readable label that indicates whether the new database\nuser authenticates with the Amazon Web Services (AWS)\nIdentity and Access Management (IAM) credentials associated with\nthe user or the user's role",
+          "enum": [
+            "NONE",
+            "USER",
+            "ROLE"
+          ],
+          "type": "string"
+        },
+        "connectionSecret": {
+          "description": "Name of the secret containing Atlas API private and public keys",
+          "properties": {
+            "name": {
+              "description": "Name of the resource being referred to\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
         "databaseName": {
           "default": "admin",
-          "description": "DatabaseName is a Database against which Atlas authenticates the user. Default value is 'admin'.",
+          "description": "DatabaseName is a Database against which Atlas authenticates the user.\nIf the user authenticates with AWS IAM, x.509, LDAP, or OIDC Workload this value should be '$external'.\nIf the user authenticates with SCRAM-SHA or OIDC Workforce, this value should be 'admin'.\nDefault value is 'admin'.",
           "type": "string"
         },
         "deleteAfterDate": {
-          "description": "DeleteAfterDate is a timestamp in ISO 8601 date and time format in UTC after which Atlas deletes the user. The specified date must be in the future and within one week.",
+          "description": "DeleteAfterDate is a timestamp in ISO 8601 date and time format in UTC after which Atlas deletes the user.\nThe specified date must be in the future and within one week.",
           "type": "string"
         },
+        "externalProjectRef": {
+          "description": "\"externalProjectRef\" holds the parent Atlas project ID.\nMutually exclusive with the \"projectRef\" field",
+          "properties": {
+            "id": {
+              "description": "ID is the Atlas project ID",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
         "labels": {
-          "description": "Labels is an array containing key-value pairs that tag and categorize the database user. Each key and value has a maximum length of 255 characters.",
+          "description": "Labels is an array containing key-value pairs that tag and categorize the database user.\nEach key and value has a maximum length of 255 characters.",
           "items": {
             "description": "LabelSpec contains key-value pairs that tag and categorize the Cluster/DBUser",
             "properties": {
@@ -46,6 +84,16 @@
           },
           "type": "array"
         },
+        "oidcAuthType": {
+          "default": "NONE",
+          "description": "Human-readable label that indicates whether the new database Username with OIDC federated authentication.\nTo create a federated authentication group (Workforce), specify the value of IDP_GROUP in this field.\nTo create a federated authentication user (Workload), specify the value of USER in this field.",
+          "enum": [
+            "NONE",
+            "IDP_GROUP",
+            "USER"
+          ],
+          "type": "string"
+        },
         "passwordSecretRef": {
           "description": "PasswordSecret is a reference to the Secret keeping the user password.",
           "properties": {
@@ -61,7 +109,7 @@
           "additionalProperties": false
         },
         "projectRef": {
-          "description": "Project is a reference to AtlasProject resource the user belongs to",
+          "description": "\"projectRef\" is a reference to the parent AtlasProject resource.\nMutually exclusive with the \"externalProjectRef\" field",
           "properties": {
             "name": {
               "description": "Name is the name of the Kubernetes Resource",
@@ -79,16 +127,16 @@
           "additionalProperties": false
         },
         "roles": {
-          "description": "Roles is an array of this user's roles and the databases / collections on which the roles apply. A role allows the user to perform particular actions on the specified database.",
+          "description": "Roles is an array of this user's roles and the databases / collections on which the roles apply. A role allows\nthe user to perform particular actions on the specified database.",
           "items": {
-            "description": "RoleSpec allows the user to perform particular actions on the specified database. A role on the admin database can include privileges that apply to the other databases as well.",
+            "description": "RoleSpec allows the user to perform particular actions on the specified database.\nA role on the admin database can include privileges that apply to the other databases as well.",
             "properties": {
               "collectionName": {
                 "description": "CollectionName is a collection for which the role applies.",
                 "type": "string"
               },
               "databaseName": {
-                "description": "DatabaseName is a database on which the user has the specified role. A role on the admin database can include privileges that apply to the other databases.",
+                "description": "DatabaseName is a database on which the user has the specified role. A role on the admin database can include\nprivileges that apply to the other databases.",
                 "type": "string"
               },
               "roleName": {
@@ -109,7 +157,7 @@
         "scopes": {
           "description": "Scopes is an array of clusters and Atlas Data Lakes that this user has access to.",
           "items": {
-            "description": "ScopeSpec if present a database user only have access to the indicated resource (Cluster or Atlas Data Lake) if none is given then it has access to all. It's highly recommended to restrict the access of the database users only to a limited set of resources.",
+            "description": "ScopeSpec if present a database user only have access to the indicated resource (Cluster or Atlas Data Lake)\nif none is given then it has access to all.\nIt's highly recommended to restrict the access of the database users only to a limited set of resources.",
             "properties": {
               "name": {
                 "description": "Name is a name of the cluster or Atlas Data Lake that the user has access to.",
@@ -134,20 +182,36 @@
           "type": "array"
         },
         "username": {
-          "description": "Username is a username for authenticating to MongoDB.",
+          "description": "Username is a username for authenticating to MongoDB\nHuman-readable label that represents the user that authenticates to MongoDB. The format of this label depends on the method of authentication:\nIn case of AWS IAM: the value should be AWS ARN for the IAM User/Role;\nIn case of OIDC Workload or Workforce: the value should be the Atlas OIDC IdP ID, followed by a '/', followed by the IdP group name;\nIn case of Plain text auth: the value can be anything",
+          "maxLength": 1024,
           "type": "string"
         },
         "x509Type": {
+          "default": "NONE",
           "description": "X509Type is X.509 method by which the database authenticates the provided username",
+          "enum": [
+            "NONE",
+            "MANAGED",
+            "CUSTOMER"
+          ],
           "type": "string"
         }
       },
       "required": [
-        "projectRef",
         "roles",
         "username"
       ],
       "type": "object",
+      "x-kubernetes-validations": [
+        {
+          "message": "must define only one project reference through externalProjectRef or projectRef",
+          "rule": "(has(self.externalProjectRef) && !has(self.projectRef)) || (!has(self.externalProjectRef) && has(self.projectRef))"
+        },
+        {
+          "message": "must define a local connection secret when referencing an external project",
+          "rule": "(has(self.externalProjectRef) && has(self.connectionSecret)) || !has(self.externalProjectRef)"
+        }
+      ],
       "additionalProperties": false
     },
     "status": {
@@ -194,7 +258,7 @@
           "type": "string"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of. The Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         },

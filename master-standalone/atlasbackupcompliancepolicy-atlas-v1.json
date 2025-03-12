@@ -1,5 +1,5 @@
 {
-  "description": "AtlasBackupPolicy is the Schema for the atlasbackuppolicies API",
+  "description": "AtlasBackupCompliancePolicy defines the desired state of a compliance policy in Atlas.",
   "properties": {
     "apiVersion": {
       "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -13,10 +13,65 @@
       "type": "object"
     },
     "spec": {
-      "description": "AtlasBackupPolicySpec defines the desired state of AtlasBackupPolicy",
       "properties": {
-        "items": {
-          "description": "A list of BackupPolicy items",
+        "authorizedEmail": {
+          "description": "Email address of the user who authorized to update the Backup Compliance Policy settings.",
+          "type": "string"
+        },
+        "authorizedUserFirstName": {
+          "description": "First name of the user who authorized to updated the Backup Compliance Policy settings.",
+          "type": "string"
+        },
+        "authorizedUserLastName": {
+          "description": "Last name of the user who authorized to updated the Backup Compliance Policy settings.",
+          "type": "string"
+        },
+        "copyProtectionEnabled": {
+          "description": "Flag that indicates whether to prevent cluster users from deleting backups copied to other regions, even if those additional snapshot regions are removed.",
+          "type": "boolean"
+        },
+        "encryptionAtRestEnabled": {
+          "description": "Flag that indicates whether Encryption at Rest using Customer Key Management is required for all clusters with a Backup Compliance Policy.",
+          "type": "boolean"
+        },
+        "onDemandPolicy": {
+          "description": "Specifications for on-demand policy.",
+          "properties": {
+            "retentionUnit": {
+              "description": "Scope of the backup policy item: days, weeks, or months",
+              "enum": [
+                "days",
+                "weeks",
+                "months"
+              ],
+              "type": "string"
+            },
+            "retentionValue": {
+              "description": "Value to associate with RetentionUnit",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "retentionUnit",
+            "retentionValue"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "overwriteBackupPolicies": {
+          "description": "Flag that indicates whether to overwrite non complying backup policies with the new data protection settings or not.",
+          "type": "boolean"
+        },
+        "pointInTimeEnabled": {
+          "description": "Flag that indicates whether the cluster uses Continuous Cloud Backups with a Backup Compliance Policy.",
+          "type": "boolean"
+        },
+        "restoreWindowDays": {
+          "description": "Number of previous days that you can restore back to with Continuous Cloud Backup with a Backup Compliance Policy. This parameter applies only to Continuous Cloud Backups with a Backup Compliance Policy.",
+          "type": "integer"
+        },
+        "scheduledPolicyItems": {
+          "description": "List that contains the specifications for one scheduled policy.",
           "items": {
             "properties": {
               "frequencyInterval": {
@@ -93,20 +148,15 @@
         }
       },
       "required": [
-        "items"
+        "authorizedEmail",
+        "authorizedUserFirstName",
+        "authorizedUserLastName"
       ],
       "type": "object",
       "additionalProperties": false
     },
     "status": {
       "properties": {
-        "backupScheduleIDs": {
-          "description": "DeploymentID of the deployment using the backup policy",
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
         "conditions": {
           "description": "Conditions is the list of statuses showing the current state of the Atlas Custom Resource",
           "items": {
