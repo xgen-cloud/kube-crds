@@ -2,11 +2,11 @@
   "description": "AtlasFederatedAuth is the Schema for the Atlasfederatedauth API",
   "properties": {
     "apiVersion": {
-      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
       "type": "string"
     },
     "kind": {
-      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
       "type": "string"
     },
     "metadata": {
@@ -15,7 +15,7 @@
     "spec": {
       "properties": {
         "connectionSecretRef": {
-          "description": "Connection secret with API credentials for configuring the federation. These credentials must have OrganizationOwner permissions.",
+          "description": "Connection secret with API credentials for configuring the federation.\nThese credentials must have OrganizationOwner permissions.",
           "properties": {
             "name": {
               "description": "Name is the name of the Kubernetes Resource",
@@ -32,6 +32,13 @@
           "type": "object",
           "additionalProperties": false
         },
+        "dataAccessIdentityProviders": {
+          "description": "The collection of unique ids representing the identity providers that can be used for data access in this organization.\nCurrently connected data access identity providers missing from the this field will be disconnected.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
         "domainAllowList": {
           "description": "Approved domains that restrict users who can join the organization based on their email address.",
           "items": {
@@ -41,7 +48,7 @@
         },
         "domainRestrictionEnabled": {
           "default": false,
-          "description": "Prevent users in the federation from accessing organizations outside of the federation, and creating new organizations. This option applies to the entire federation. See more information at https://www.mongodb.com/docs/atlas/security/federation-advanced-options/#restrict-user-membership-to-the-federation",
+          "description": "Prevent users in the federation from accessing organizations outside of the federation, and creating new organizations.\nThis option applies to the entire federation.\nSee more information at https://www.mongodb.com/docs/atlas/security/federation-advanced-options/#restrict-user-membership-to-the-federation",
           "type": "boolean"
         },
         "enabled": {
@@ -159,7 +166,7 @@
           "type": "array"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of. The Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         }
