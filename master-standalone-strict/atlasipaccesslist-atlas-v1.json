@@ -1,5 +1,5 @@
 {
-  "description": "AtlasBackupSchedule is the Schema for the atlasbackupschedules API",
+  "description": "AtlasIPAccessList is the Schema for the atlasipaccesslists API.",
   "properties": {
     "apiVersion": {
       "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -13,73 +13,76 @@
       "type": "object"
     },
     "spec": {
-      "description": "AtlasBackupScheduleSpec defines the desired state of AtlasBackupSchedule",
+      "description": "AtlasIPAccessListSpec defines the desired state of AtlasIPAccessList.",
       "properties": {
-        "autoExportEnabled": {
-          "default": false,
-          "description": "Specify true to enable automatic export of cloud backup snapshots to the AWS bucket. You must also define the export policy using export. If omitted, defaults to false.",
-          "type": "boolean"
-        },
-        "copySettings": {
-          "description": "Copy backups to other regions for increased resiliency and faster restores.",
-          "items": {
-            "properties": {
-              "cloudProvider": {
-                "default": "AWS",
-                "description": "Identifies the cloud provider that stores the snapshot copy.",
-                "enum": [
-                  "AWS",
-                  "GCP",
-                  "AZURE"
-                ],
-                "type": "string"
-              },
-              "frequencies": {
-                "description": "List that describes which types of snapshots to copy.",
-                "items": {
-                  "type": "string"
-                },
-                "minItems": 1,
-                "type": "array"
-              },
-              "regionName": {
-                "description": "Target region to copy snapshots belonging to replicationSpecId to.",
-                "type": "string"
-              },
-              "shouldCopyOplogs": {
-                "description": "Flag that indicates whether to copy the oplogs to the target region.",
-                "type": "boolean"
-              }
-            },
-            "type": "object",
-            "additionalProperties": false
-          },
-          "type": "array"
-        },
-        "export": {
-          "description": "Export policy for automatically exporting cloud backup snapshots to AWS bucket.",
+        "connectionSecret": {
+          "description": "Name of the secret containing Atlas API private and public keys",
           "properties": {
-            "exportBucketId": {
-              "description": "Unique Atlas identifier of the AWS bucket which was granted access to export backup snapshot",
-              "type": "string"
-            },
-            "frequencyType": {
-              "default": "monthly",
-              "enum": [
-                "monthly"
-              ],
+            "name": {
+              "description": "Name of the resource being referred to\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
               "type": "string"
             }
           },
           "required": [
-            "exportBucketId",
-            "frequencyType"
+            "name"
           ],
           "type": "object",
           "additionalProperties": false
         },
-        "policy": {
-          "description": "A reference (name & namespace) for backup policy in the desired updated backup policy.",
+        "entries": {
+          "description": "Entries is the list of IP Access to be managed",
+          "items": {
+            "properties": {
+              "awsSecurityGroup": {
+                "description": "Unique identifier of AWS security group in this access list entry.",
+                "type": "string"
+              },
+              "cidrBlock": {
+                "description": "Range of IP addresses in CIDR notation in this access list entry.",
+                "type": "string"
+              },
+              "comment": {
+                "description": "Comment associated with this access list entry.",
+                "type": "string"
+              },
+              "deleteAfterDate": {
+                "description": "Date and time after which Atlas deletes the temporary access list entry.",
+                "format": "date-time",
+                "type": "string"
+              },
+              "ipAddress": {
+                "description": "Entry using an IP address in this access list entry.",
+                "type": "string"
+              }
+            },
+            "type": "object",
+            "x-kubernetes-validations": [
+              {
+                "message": "Only one of ipAddress, cidrBlock, or awsSecurityGroup may be set.",
+                "rule": "!(has(self.ipAddress) && (has(self.cidrBlock) || has(self.awsSecurityGroup))) && !(has(self.cidrBlock) && has(self.awsSecurityGroup))"
+              }
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "externalProjectRef": {
+          "description": "\"externalProjectRef\" holds the parent Atlas project ID.\nMutually exclusive with the \"projectRef\" field",
+          "properties": {
+            "id": {
+              "description": "ID is the Atlas project ID",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "type": "object",
+          "additionalProperties": false
+        },
+        "projectRef": {
+          "description": "\"projectRef\" is a reference to the parent AtlasProject resource.\nMutually exclusive with the \"externalProjectRef\" field",
           "properties": {
             "name": {
               "description": "Name is the name of the Kubernetes Resource",
@@ -95,43 +98,26 @@
           ],
           "type": "object",
           "additionalProperties": false
-        },
-        "referenceHourOfDay": {
-          "description": "UTC Hour of day between 0 and 23, inclusive, representing which hour of the day that Atlas takes snapshots for backup policy items",
-          "format": "int64",
-          "maximum": 23,
-          "minimum": 0,
-          "type": "integer"
-        },
-        "referenceMinuteOfHour": {
-          "description": "UTC Minutes after ReferenceHourOfDay that Atlas takes snapshots for backup policy items. Must be between 0 and 59, inclusive.",
-          "format": "int64",
-          "maximum": 59,
-          "minimum": 0,
-          "type": "integer"
-        },
-        "restoreWindowDays": {
-          "default": 1,
-          "description": "Number of days back in time you can restore to with Continuous Cloud Backup accuracy. Must be a positive, non-zero integer. Applies to continuous cloud backups only.",
-          "format": "int64",
-          "type": "integer"
-        },
-        "updateSnapshots": {
-          "description": "Specify true to apply the retention changes in the updated backup policy to snapshots that Atlas took previously.",
-          "type": "boolean"
-        },
-        "useOrgAndGroupNamesInExportPrefix": {
-          "description": "Specify true to use organization and project names instead of organization and project UUIDs in the path for the metadata files that Atlas uploads to your S3 bucket after it finishes exporting the snapshots",
-          "type": "boolean"
         }
       },
       "required": [
-        "policy"
+        "entries"
       ],
       "type": "object",
+      "x-kubernetes-validations": [
+        {
+          "message": "must define only one project reference through externalProjectRef or projectRef",
+          "rule": "(has(self.externalProjectRef) && !has(self.projectRef)) || (!has(self.externalProjectRef) && has(self.projectRef))"
+        },
+        {
+          "message": "must define a local connection secret when referencing an external project",
+          "rule": "(has(self.externalProjectRef) && has(self.connectionSecret)) || !has(self.externalProjectRef)"
+        }
+      ],
       "additionalProperties": false
     },
     "status": {
+      "description": "AtlasIPAccessListStatus is the most recent observed status of the AtlasIPAccessList cluster. Read-only.",
       "properties": {
         "conditions": {
           "description": "Conditions is the list of statuses showing the current state of the Atlas Custom Resource",
@@ -169,9 +155,25 @@
           },
           "type": "array"
         },
-        "deploymentID": {
+        "entries": {
+          "description": "Status is the state of the ip access list",
           "items": {
-            "type": "string"
+            "properties": {
+              "entry": {
+                "description": "Entry is the ip access Atlas is managing",
+                "type": "string"
+              },
+              "status": {
+                "description": "Status is the correspondent state of the entry",
+                "type": "string"
+              }
+            },
+            "required": [
+              "entry",
+              "status"
+            ],
+            "type": "object",
+            "additionalProperties": false
           },
           "type": "array"
         },
