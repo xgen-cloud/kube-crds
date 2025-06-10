@@ -1,5 +1,5 @@
 {
-  "description": "AtlasBackupCompliancePolicy defines the desired state of a compliance policy in Atlas.",
+  "description": "The AtlasBackupCompliancePolicy is a configuration that enforces specific backup and retention requirements",
   "properties": {
     "apiVersion": {
       "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
@@ -13,6 +13,7 @@
       "type": "object"
     },
     "spec": {
+      "description": "AtlasBackupCompliancePolicySpec is the specification of the desired configuration of backup compliance policy",
       "properties": {
         "authorizedEmail": {
           "description": "Email address of the user who authorized to update the Backup Compliance Policy settings.",

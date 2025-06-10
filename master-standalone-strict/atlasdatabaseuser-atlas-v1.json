@@ -48,6 +48,11 @@
           "description": "DeleteAfterDate is a timestamp in ISO 8601 date and time format in UTC after which Atlas deletes the user.\nThe specified date must be in the future and within one week.",
           "type": "string"
         },
+        "description": {
+          "description": "Description of this database user. Maximum 100 characters.",
+          "maxLength": 100,
+          "type": "string"
+        },
         "externalProjectRef": {
           "description": "\"externalProjectRef\" holds the parent Atlas project ID.\nMutually exclusive with the \"projectRef\" field",
           "properties": {
