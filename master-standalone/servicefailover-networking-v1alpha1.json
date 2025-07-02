@@ -1,249 +1,225 @@
 {
-  "apiVersion": "apiextensions.k8s.io/v1",
-  "kind": "CustomResourceDefinition",
-  "metadata": {
-    "annotations": {
-      "controller-gen.kubebuilder.io/version": "(unknown)"
+  "description": "ServiceFailover is the Schema for the servicefailovers API.",
+  "properties": {
+    "apiVersion": {
+      "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "type": "string"
     },
-    "name": "servicefailovers.networking.10gen.com"
-  },
-  "spec": {
-    "group": "networking.10gen.com",
-    "names": {
-      "kind": "ServiceFailover",
-      "listKind": "ServiceFailoverList",
-      "plural": "servicefailovers",
-      "singular": "servicefailover"
+    "kind": {
+      "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "type": "string"
     },
-    "scope": "Namespaced",
-    "versions": [
-      {
-        "name": "v1alpha1",
-        "schema": {
-          "openAPIV3Schema": {
-            "description": "ServiceFailover is the Schema for the servicefailovers API.",
-            "properties": {
-              "apiVersion": {
-                "description": "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
-                "type": "string"
-              },
-              "kind": {
-                "description": "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
-                "type": "string"
-              },
-              "metadata": {
-                "type": "object"
-              },
-              "spec": {
-                "description": "ServiceFailoverSpec defines the desired state of ServiceFailover.",
-                "properties": {
-                  "active_xgen_region": {
-                    "description": "Use active-passive failover, with this region active",
-                    "type": "string"
-                  },
-                  "exportTo": {
-                    "description": "Namespaces to export to",
-                    "items": {
-                      "type": "string"
-                    },
-                    "type": "array"
-                  },
-                  "global": {
-                    "description": "Global routing policy for the service.",
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "description": "ServiceFailoverSpec defines the desired state of ServiceFailover.",
+      "properties": {
+        "active_xgen_region": {
+          "description": "Use active-passive failover, with this region active",
+          "type": "string"
+        },
+        "exportTo": {
+          "description": "Namespaces to export to",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "global": {
+          "description": "Global routing policy for the service.",
+          "properties": {
+            "failoverSettings": {
+              "properties": {
+                "failover": {
+                  "items": {
                     "properties": {
-                      "failoverSettings": {
-                        "properties": {
-                          "failover": {
-                            "items": {
-                              "properties": {
-                                "from": {
-                                  "type": "string"
-                                },
-                                "to": {
-                                  "type": "string"
-                                }
-                              },
-                              "type": "object"
-                            },
-                            "type": "array"
-                          },
-                          "failoverPriority": {
-                            "items": {
-                              "type": "string"
-                            },
-                            "type": "array"
-                          }
-                        },
-                        "type": "object"
+                      "from": {
+                        "type": "string"
                       },
-                      "outlierDetectionSettings": {
-                        "description": "Outlier Detection configuration for the service.",
-                        "properties": {
-                          "base_ejection_time": {
-                            "description": "Minimum ejection duration. A host will remain ejected for a period\nequal to the product of minimum ejection duration and the number of\ntimes the host has been ejected. This technique allows the system to\nautomatically increase the ejection period for unhealthy upstream\nservers. format: 1h/1m/1s/1ms. MUST be >=1ms. Default is 30s.",
-                            "format": "int64",
-                            "type": "integer"
-                          },
-                          "consecutive_5xx_errors": {
-                            "description": "Number of 5xx errors before a host is ejected from the connection pool.\nWhen the upstream host is accessed over an opaque TCP connection, connect\ntimeouts, connection error/failure and request failure events qualify as a\n5xx error.\nThis feature defaults to 5 but can be disabled by setting the value to 0.\n\nNote that `consecutiveGatewayErrors` and `consecutive5xxErrors` can be\nused separately or together. Because the errors counted by\n`consecutiveGatewayErrors` are also included in `consecutive5xxErrors`,\nif the value of `consecutiveGatewayErrors` is greater than or equal to\nthe value of `consecutive5xxErrors`, `consecutiveGatewayErrors` will have\nno effect.",
-                            "format": "int32",
-                            "type": "integer"
-                          },
-                          "consecutive_gateway_errors": {
-                            "description": "Number of gateway errors before a host is ejected from the connection pool.\nWhen the upstream host is accessed over HTTP, a 502, 503, or 504 return\ncode qualifies as a gateway error. When the upstream host is accessed over\nan opaque TCP connection, connect timeouts and connection error/failure\nevents qualify as a gateway error.\nThis feature is disabled by default or when set to the value 0.\n\nNote that `consecutiveGatewayErrors` and `consecutive5xxErrors` can be\nused separately or together. Because the errors counted by\n`consecutiveGatewayErrors` are also included in `consecutive5xxErrors`,\nif the value of `consecutiveGatewayErrors` is greater than or equal to\nthe value of `consecutive5xxErrors`, `consecutiveGatewayErrors` will have\nno effect.",
-                            "format": "int32",
-                            "type": "integer"
-                          },
-                          "consecutive_local_origin_failures": {
-                            "description": "The number of consecutive locally originated failures before ejection\noccurs. Defaults to 5. Parameter takes effect only when `splitExternalLocalOriginErrors`\nis set to true.",
-                            "format": "int32",
-                            "type": "integer"
-                          },
-                          "interval": {
-                            "description": "Time interval between ejection sweep analysis. format:\n1h/1m/1s/1ms. MUST be >=1ms. Default is 10s.",
-                            "format": "int64",
-                            "type": "integer"
-                          },
-                          "max_ejection_percent": {
-                            "description": "Maximum % of hosts in the load balancing pool for the upstream\nservice that can be ejected. Defaults to 10%.",
-                            "format": "int32",
-                            "type": "integer"
-                          },
-                          "min_health_percent": {
-                            "description": "Outlier detection will be enabled as long as the associated load balancing\npool has at least `minHealthPercent` hosts in healthy mode. When the\npercentage of healthy hosts in the load balancing pool drops below this\nthreshold, outlier detection will be disabled and the proxy will load balance\nacross all hosts in the pool (healthy and unhealthy). The threshold can be\ndisabled by setting it to 0%. The default is 0% as it's not typically\napplicable in k8s environments with few pods per service.",
-                            "format": "int32",
-                            "type": "integer"
-                          },
-                          "split_external_local_origin_errors": {
-                            "description": "Determines whether to distinguish local origin failures from external errors. If set to true\n`consecutiveLocalOriginFailures` is taken into account for outlier detection calculations.\nThis should be used when you want to derive the outlier detection status based on the errors\nseen locally such as failure to connect, timeout while connecting etc. rather than the status code\nreturned by upstream service. This is especially useful when the upstream service explicitly returns\na 5xx for some requests and you want to ignore those responses from upstream service while determining\nthe outlier detection status of a host.\nDefaults to false.",
-                            "type": "boolean"
-                          }
-                        },
-                        "type": "object"
-                      },
-                      "regions": {
-                        "description": "Regions is a list of regions where the service is available and can be routed to.",
-                        "items": {
-                          "type": "string"
-                        },
-                        "type": "array"
+                      "to": {
+                        "type": "string"
                       }
                     },
-                    "type": "object"
+                    "type": "object",
+                    "additionalProperties": false
                   },
-                  "ports": {
-                    "description": "We would like to have a single ServiceAnnounce as we embedded the protocol in the hostname\nPorts the failover applies to",
-                    "items": {
-                      "properties": {
-                        "name": {
-                          "type": "string"
-                        },
-                        "port": {
-                          "type": "integer"
-                        },
-                        "protocol": {
-                          "type": "string"
-                        },
-                        "targetPort": {
-                          "type": "integer"
-                        }
-                      },
-                      "required": [
-                        "name",
-                        "port"
-                      ],
-                      "type": "object"
-                    },
-                    "type": "array"
-                  },
-                  "workloadLabels": {
-                    "additionalProperties": {
-                      "type": "string"
-                    },
-                    "description": "WorkloadLabels is a set of key/value pairs that identify the workloads",
-                    "type": "object"
-                  },
-                  "xgen_app": {
-                    "description": "The name of the service to create a failover entry for",
+                  "type": "array"
+                },
+                "failoverPriority": {
+                  "items": {
                     "type": "string"
-                  }
-                },
-                "required": [
-                  "active_xgen_region",
-                  "xgen_app"
-                ],
-                "type": "object"
+                  },
+                  "type": "array"
+                }
               },
-              "status": {
-                "description": "ServiceFailoverStatus defines the observed state of ServiceFailover.",
-                "properties": {
-                  "conditions": {
-                    "items": {
-                      "description": "Condition contains details for one aspect of the current state of this API Resource.",
-                      "properties": {
-                        "lastTransitionTime": {
-                          "description": "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.",
-                          "format": "date-time",
-                          "type": "string"
-                        },
-                        "message": {
-                          "description": "message is a human readable message indicating details about the transition.\nThis may be an empty string.",
-                          "maxLength": 32768,
-                          "type": "string"
-                        },
-                        "observedGeneration": {
-                          "description": "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance.",
-                          "format": "int64",
-                          "minimum": 0,
-                          "type": "integer"
-                        },
-                        "reason": {
-                          "description": "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty.",
-                          "maxLength": 1024,
-                          "minLength": 1,
-                          "pattern": "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$",
-                          "type": "string"
-                        },
-                        "status": {
-                          "description": "status of the condition, one of True, False, Unknown.",
-                          "enum": [
-                            "True",
-                            "False",
-                            "Unknown"
-                          ],
-                          "type": "string"
-                        },
-                        "type": {
-                          "description": "type of condition in CamelCase or in foo.example.com/CamelCase.",
-                          "maxLength": 316,
-                          "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$",
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "lastTransitionTime",
-                        "message",
-                        "reason",
-                        "status",
-                        "type"
-                      ],
-                      "type": "object"
-                    },
-                    "type": "array"
-                  }
+              "type": "object",
+              "additionalProperties": false
+            },
+            "outlierDetectionSettings": {
+              "description": "Outlier Detection configuration for the service.",
+              "properties": {
+                "base_ejection_time": {
+                  "description": "Minimum ejection duration. A host will remain ejected for a period\nequal to the product of minimum ejection duration and the number of\ntimes the host has been ejected. This technique allows the system to\nautomatically increase the ejection period for unhealthy upstream\nservers. format: 1h/1m/1s/1ms. MUST be >=1ms. Default is 30s.",
+                  "format": "int64",
+                  "type": "integer"
                 },
-                "type": "object"
+                "consecutive_5xx_errors": {
+                  "description": "Number of 5xx errors before a host is ejected from the connection pool.\nWhen the upstream host is accessed over an opaque TCP connection, connect\ntimeouts, connection error/failure and request failure events qualify as a\n5xx error.\nThis feature defaults to 5 but can be disabled by setting the value to 0.\n\nNote that `consecutiveGatewayErrors` and `consecutive5xxErrors` can be\nused separately or together. Because the errors counted by\n`consecutiveGatewayErrors` are also included in `consecutive5xxErrors`,\nif the value of `consecutiveGatewayErrors` is greater than or equal to\nthe value of `consecutive5xxErrors`, `consecutiveGatewayErrors` will have\nno effect.",
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "consecutive_gateway_errors": {
+                  "description": "Number of gateway errors before a host is ejected from the connection pool.\nWhen the upstream host is accessed over HTTP, a 502, 503, or 504 return\ncode qualifies as a gateway error. When the upstream host is accessed over\nan opaque TCP connection, connect timeouts and connection error/failure\nevents qualify as a gateway error.\nThis feature is disabled by default or when set to the value 0.\n\nNote that `consecutiveGatewayErrors` and `consecutive5xxErrors` can be\nused separately or together. Because the errors counted by\n`consecutiveGatewayErrors` are also included in `consecutive5xxErrors`,\nif the value of `consecutiveGatewayErrors` is greater than or equal to\nthe value of `consecutive5xxErrors`, `consecutiveGatewayErrors` will have\nno effect.",
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "consecutive_local_origin_failures": {
+                  "description": "The number of consecutive locally originated failures before ejection\noccurs. Defaults to 5. Parameter takes effect only when `splitExternalLocalOriginErrors`\nis set to true.",
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "interval": {
+                  "description": "Time interval between ejection sweep analysis. format:\n1h/1m/1s/1ms. MUST be >=1ms. Default is 10s.",
+                  "format": "int64",
+                  "type": "integer"
+                },
+                "max_ejection_percent": {
+                  "description": "Maximum % of hosts in the load balancing pool for the upstream\nservice that can be ejected. Defaults to 10%.",
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "min_health_percent": {
+                  "description": "Outlier detection will be enabled as long as the associated load balancing\npool has at least `minHealthPercent` hosts in healthy mode. When the\npercentage of healthy hosts in the load balancing pool drops below this\nthreshold, outlier detection will be disabled and the proxy will load balance\nacross all hosts in the pool (healthy and unhealthy). The threshold can be\ndisabled by setting it to 0%. The default is 0% as it's not typically\napplicable in k8s environments with few pods per service.",
+                  "format": "int32",
+                  "type": "integer"
+                },
+                "split_external_local_origin_errors": {
+                  "description": "Determines whether to distinguish local origin failures from external errors. If set to true\n`consecutiveLocalOriginFailures` is taken into account for outlier detection calculations.\nThis should be used when you want to derive the outlier detection status based on the errors\nseen locally such as failure to connect, timeout while connecting etc. rather than the status code\nreturned by upstream service. This is especially useful when the upstream service explicitly returns\na 5xx for some requests and you want to ignore those responses from upstream service while determining\nthe outlier detection status of a host.\nDefaults to false.",
+                  "type": "boolean"
+                }
+              },
+              "type": "object",
+              "additionalProperties": false
+            },
+            "regions": {
+              "description": "Regions is a list of regions where the service is available and can be routed to.",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object",
+          "additionalProperties": false
+        },
+        "ports": {
+          "description": "We would like to have a single ServiceAnnounce as we embedded the protocol in the hostname\nPorts the failover applies to",
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "port": {
+                "type": "integer"
+              },
+              "protocol": {
+                "type": "string"
+              },
+              "targetPort": {
+                "type": "integer"
               }
             },
-            "type": "object"
-          }
+            "required": [
+              "name",
+              "port"
+            ],
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
         },
-        "served": true,
-        "storage": true,
-        "subresources": {
-          "status": {}
+        "workloadLabels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "WorkloadLabels is a set of key/value pairs that identify the workloads",
+          "type": "object"
+        },
+        "xgen_app": {
+          "description": "The name of the service to create a failover entry for",
+          "type": "string"
         }
-      }
-    ]
-  }
+      },
+      "required": [
+        "active_xgen_region",
+        "xgen_app"
+      ],
+      "type": "object",
+      "additionalProperties": false
+    },
+    "status": {
+      "description": "ServiceFailoverStatus defines the observed state of ServiceFailover.",
+      "properties": {
+        "conditions": {
+          "items": {
+            "description": "Condition contains details for one aspect of the current state of this API Resource.",
+            "properties": {
+              "lastTransitionTime": {
+                "description": "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.",
+                "format": "date-time",
+                "type": "string"
+              },
+              "message": {
+                "description": "message is a human readable message indicating details about the transition.\nThis may be an empty string.",
+                "maxLength": 32768,
+                "type": "string"
+              },
+              "observedGeneration": {
+                "description": "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance.",
+                "format": "int64",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "reason": {
+                "description": "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty.",
+                "maxLength": 1024,
+                "minLength": 1,
+                "pattern": "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$",
+                "type": "string"
+              },
+              "status": {
+                "description": "status of the condition, one of True, False, Unknown.",
+                "enum": [
+                  "True",
+                  "False",
+                  "Unknown"
+                ],
+                "type": "string"
+              },
+              "type": {
+                "description": "type of condition in CamelCase or in foo.example.com/CamelCase.",
+                "maxLength": 316,
+                "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "lastTransitionTime",
+              "message",
+              "reason",
+              "status",
+              "type"
+            ],
+            "type": "object",
+            "additionalProperties": false
+          },
+          "type": "array"
+        }
+      },
+      "type": "object",
+      "additionalProperties": false
+    }
+  },
+  "type": "object"
 }
