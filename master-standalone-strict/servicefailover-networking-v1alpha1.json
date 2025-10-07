@@ -152,7 +152,6 @@
         }
       },
       "required": [
-        "active_xgen_region",
         "xgen_app"
       ],
       "type": "object",
