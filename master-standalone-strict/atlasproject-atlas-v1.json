@@ -268,6 +268,16 @@
                 },
                 "type": "array"
               },
+              "severityOverride": {
+                "description": "SeverityOverride optionally overrides the default severity level for an alert.",
+                "enum": [
+                  "INFO",
+                  "WARNING",
+                  "ERROR",
+                  "CRITICAL"
+                ],
+                "type": "string"
+              },
               "threshold": {
                 "description": "Threshold  causes an alert to be triggered.",
                 "properties": {
@@ -840,7 +850,13 @@
         },
         "name": {
           "description": "Name is the name of the Project that is created in Atlas by the Operator if it doesn't exist yet.",
-          "type": "string"
+          "type": "string",
+          "x-kubernetes-validations": [
+            {
+              "message": "Name cannot be modified after project creation",
+              "rule": "self == oldSelf"
+            }
+          ]
         },
         "networkPeers": {
           "description": "NetworkPeers is a list of Network Peers configured for the current Project.",
@@ -1362,6 +1378,10 @@
               },
               "resolved": {
                 "description": "When the alert was closed. Only present if the status is CLOSED.",
+                "type": "string"
+              },
+              "severityOverride": {
+                "description": "Severity of the alert.",
                 "type": "string"
               },
               "sourceTypeName": {

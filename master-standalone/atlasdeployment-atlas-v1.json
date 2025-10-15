@@ -78,6 +78,14 @@
               ],
               "type": "string"
             },
+            "configServerManagementMode": {
+              "description": "Config Server Management Mode for creating or updating a sharded cluster.",
+              "enum": [
+                "ATLAS_MANAGED",
+                "FIXED_TO_DEDICATED"
+              ],
+              "type": "string"
+            },
             "customZoneMapping": {
               "items": {
                 "properties": {
@@ -180,7 +188,13 @@
             "name": {
               "description": "Name of the advanced deployment as it appears in Atlas.\nAfter Atlas creates the deployment, you can't change its name.\nCan only contain ASCII letters, numbers, and hyphens.",
               "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-]*$",
-              "type": "string"
+              "type": "string",
+              "x-kubernetes-validations": [
+                {
+                  "message": "Name cannot be modified after deployment creation",
+                  "rule": "self == oldSelf"
+                }
+              ]
             },
             "paused": {
               "description": "Flag that indicates whether the deployment should be paused.",
@@ -965,6 +979,10 @@
           ],
           "type": "object",
           "additionalProperties": false
+        },
+        "upgradeToDedicated": {
+          "description": " upgradeToDedicated, when set to true, triggers the migration from a Flex to a\n Dedicated cluster. The user MUST provide the new dedicated cluster configuration.\n This flag is ignored if the cluster is already dedicated.",
+          "type": "boolean"
         }
       },
       "type": "object",
