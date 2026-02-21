@@ -8,6 +8,12 @@ export FILENAME_FORMAT={kind}-{fullgroup}-{version}
 ../../kubeconform/scripts/openapi2jsonschema.py ../../kube-resources/crds/victoria-metrics-operator-rcell/crds.yaml
 ```
 
+Next, run the `remove-additional-properties.sh` script to have the CRDs operate as intended, respecting `x-kubernetes-preserve-unknown-fields: true` instead of the `additionalProperties: false` added by `openapi2jsonschema.py`.
+
+```sh
+./remove-additional-properties.sh *.json
+```
+
 ### Details
 
 Given an `apiVersion: operator.victoriametrics.com/v1`, the [`-schema-location` template](https://github.com/yannh/kubeconform/blob/e60892483e5b7e5dffa95fc3f121646a96ca270f/pkg/registry/registry.go#L33) uses everything before the `/` for `{{.Group}}` (i.e. `operator.victoriametrics.com`) while the [`openapi2jsonschema.py` script](https://github.com/yannh/kubeconform/blob/e60892483e5b7e5dffa95fc3f121646a96ca270f/scripts/openapi2jsonschema.py#L157-L158) has `{group}` that is split at the first `.` (i.e. `operator`) and `{fullgroup}` that is the full group name.
