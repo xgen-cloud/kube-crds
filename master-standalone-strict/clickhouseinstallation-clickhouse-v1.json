@@ -1,16 +1,16 @@
 {
-  "description": "define a set of Kubernetes resources (StatefulSet, PVC, Service, ConfigMap) which describe behavior one or more ClickHouse clusters",
+  "description": "define a set of Kubernetes resources (StatefulSet, PVC, Service, ConfigMap) which describe behavior one or more clusters",
   "type": "object",
   "required": [
     "spec"
   ],
   "properties": {
     "apiVersion": {
-      "description": "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources",
+      "description": "APIVersion defines the versioned schema of this representation\nof an object. Servers should convert recognized schemas to the latest\ninternal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources\n",
       "type": "string"
     },
     "kind": {
-      "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
+      "description": "Kind is a string value representing the REST resource this\nobject represents. Servers may infer this from the endpoint the client\nsubmits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds\n",
       "type": "string"
     },
     "metadata": {
@@ -18,23 +18,23 @@
     },
     "status": {
       "type": "object",
-      "description": "Current ClickHouseInstallation manifest status, contains many fields like a normalized configuration, clickhouse-operator version, current action and all applied action list, current taskID and all applied taskIDs and other",
+      "description": "Status contains many fields like a normalized configuration, clickhouse-operator version, current action and all applied action list, current taskID and all applied taskIDs and other\n",
       "properties": {
         "chop-version": {
           "type": "string",
-          "description": "ClickHouse operator version"
+          "description": "Operator version"
         },
         "chop-commit": {
           "type": "string",
-          "description": "ClickHouse operator git commit SHA"
+          "description": "Operator git commit SHA"
         },
         "chop-date": {
           "type": "string",
-          "description": "ClickHouse operator build date"
+          "description": "Operator build date"
         },
         "chop-ip": {
           "type": "string",
-          "description": "IP address of the operator's pod which managed this CHI"
+          "description": "IP address of the operator's pod which managed this resource"
         },
         "clusters": {
           "type": "integer",
@@ -67,6 +67,7 @@
         "taskIDsStarted": {
           "type": "array",
           "description": "Started task ids",
+          "nullable": true,
           "items": {
             "type": "string"
           }
@@ -74,6 +75,7 @@
         "taskIDsCompleted": {
           "type": "array",
           "description": "Completed task ids",
+          "nullable": true,
           "items": {
             "type": "string"
           }
@@ -85,6 +87,7 @@
         "actions": {
           "type": "array",
           "description": "Actions",
+          "nullable": true,
           "items": {
             "type": "string"
           }
@@ -96,9 +99,15 @@
         "errors": {
           "type": "array",
           "description": "Errors",
+          "nullable": true,
           "items": {
             "type": "string"
           }
+        },
+        "hostsUnchanged": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Unchanged Hosts count"
         },
         "hostsUpdated": {
           "type": "integer",
@@ -128,6 +137,7 @@
         "pods": {
           "type": "array",
           "description": "Pods",
+          "nullable": true,
           "items": {
             "type": "string"
           }
@@ -135,6 +145,7 @@
         "pod-ips": {
           "type": "array",
           "description": "Pod IPs",
+          "nullable": true,
           "items": {
             "type": "string"
           }
@@ -142,6 +153,7 @@
         "fqdns": {
           "type": "array",
           "description": "Pods FQDNs",
+          "nullable": true,
           "items": {
             "type": "string"
           }
@@ -150,6 +162,14 @@
           "type": "string",
           "description": "Endpoint"
         },
+        "endpoints": {
+          "type": "array",
+          "description": "All endpoints",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          }
+        },
         "generation": {
           "type": "integer",
           "minimum": 0,
@@ -157,17 +177,34 @@
         },
         "normalized": {
           "type": "object",
-          "description": "Normalized CHI requested",
+          "description": "Normalized resource requested",
+          "nullable": true,
           "x-kubernetes-preserve-unknown-fields": true
         },
         "normalizedCompleted": {
           "type": "object",
-          "description": "Normalized CHI completed",
+          "description": "Normalized resource completed",
+          "nullable": true,
+          "x-kubernetes-preserve-unknown-fields": true
+        },
+        "actionPlan": {
+          "type": "object",
+          "description": "Action Plan",
+          "nullable": true,
           "x-kubernetes-preserve-unknown-fields": true
         },
         "hostsWithTablesCreated": {
           "type": "array",
           "description": "List of hosts with tables created by the operator",
+          "nullable": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        "hostsWithReplicaCaughtUp": {
+          "type": "array",
+          "description": "List of hosts with replica caught up",
+          "nullable": true,
           "items": {
             "type": "string"
           }
@@ -175,6 +212,7 @@
         "usedTemplates": {
           "type": "array",
           "description": "List of templates used to build this CHI",
+          "nullable": true,
           "x-kubernetes-preserve-unknown-fields": true,
           "items": {
             "type": "object",
@@ -229,6 +267,35 @@
             "RollingUpdate"
           ]
         },
+        "suspend": {
+          "type": "string",
+          "description": "Suspend reconciliation of resources managed by a ClickHouse Installation.\nWorks as the following:\n - When `suspend` is `true` operator stops reconciling all resources.\n - When `suspend` is `false` or not set, operator reconciles all resources.\n",
+          "enum": [
+            "",
+            "0",
+            "1",
+            "False",
+            "false",
+            "True",
+            "true",
+            "No",
+            "no",
+            "Yes",
+            "yes",
+            "Off",
+            "off",
+            "On",
+            "on",
+            "Disable",
+            "disable",
+            "Enable",
+            "enable",
+            "Disabled",
+            "disabled",
+            "Enabled",
+            "enabled"
+          ]
+        },
         "troubleshoot": {
           "type": "string",
           "description": "Allows to troubleshoot Pods during CrashLoopBack state.\nThis may happen when wrong configuration applied, in this case `clickhouse-server` wouldn't start.\nCommand within ClickHouse container is modified with `sleep` in order to avoid quick restarts\nand give time to troubleshoot via CLI.\nLiveness and Readiness probes are disabled as well.\n",
@@ -264,12 +331,13 @@
         },
         "templating": {
           "type": "object",
-          "description": "Optional, defines policy for applying current ClickHouseInstallationTemplate to ClickHouseInstallation(s)",
+          "description": "Optional, applicable inside ClickHouseInstallationTemplate only.\nDefines current ClickHouseInstallationTemplate application options to target ClickHouseInstallation(s).\"\n",
           "properties": {
             "policy": {
               "type": "string",
               "description": "When defined as `auto` inside ClickhouseInstallationTemplate, this ClickhouseInstallationTemplate\nwill be auto-added into ClickHouseInstallation, selectable by `chiSelector`.\nDefault value is `manual`, meaning ClickHouseInstallation should request this ClickhouseInstallationTemplate explicitly.\n",
               "enum": [
+                "",
                 "auto",
                 "manual"
               ]
@@ -284,11 +352,16 @@
         },
         "reconciling": {
           "type": "object",
-          "description": "optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side",
+          "description": "[OBSOLETED] Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side",
           "properties": {
             "policy": {
               "type": "string",
-              "description": "DEPRECATED"
+              "description": "DISCUSSED TO BE DEPRECATED\nSyntax sugar\nOverrides all three 'reconcile.host.wait.{exclude, queries, include}' values from the operator's config\nPossible values:\n - wait - should wait to exclude host, complete queries and include host back into the cluster\n - nowait - should NOT wait to exclude host, complete queries and include host back into the cluster\n",
+              "enum": [
+                "",
+                "wait",
+                "nowait"
+              ]
             },
             "configMapPropagationTimeout": {
               "type": "integer",
@@ -298,40 +371,44 @@
             },
             "cleanup": {
               "type": "object",
-              "description": "optional, define behavior for cleanup Kubernetes resources during reconcile cycle",
+              "description": "Optional, defines behavior for cleanup Kubernetes resources during reconcile cycle",
               "properties": {
                 "unknownObjects": {
                   "type": "object",
-                  "description": "what clickhouse-operator shall do when found Kubernetes resources which should be managed with clickhouse-operator, but not have `ownerReference` to any currently managed `ClickHouseInstallation` resource, default behavior is `Delete`",
+                  "description": "Describes what clickhouse-operator should do with found Kubernetes resources which should be managed by clickhouse-operator,\nbut do not have `ownerReference` to any currently managed `ClickHouseInstallation` resource.\nDefault behavior is `Delete`\"\n",
                   "properties": {
                     "statefulSet": {
                       "type": "string",
-                      "description": "behavior policy for unknown StatefulSet, Delete by default",
+                      "description": "Behavior policy for unknown StatefulSet, `Delete` by default",
                       "enum": [
+                        "",
                         "Retain",
                         "Delete"
                       ]
                     },
                     "pvc": {
                       "type": "string",
-                      "description": "behavior policy for unknown PVC, Delete by default",
+                      "description": "Behavior policy for unknown PVC, `Delete` by default",
                       "enum": [
+                        "",
                         "Retain",
                         "Delete"
                       ]
                     },
                     "configMap": {
                       "type": "string",
-                      "description": "behavior policy for unknown ConfigMap, Delete by default",
+                      "description": "Behavior policy for unknown ConfigMap, `Delete` by default",
                       "enum": [
+                        "",
                         "Retain",
                         "Delete"
                       ]
                     },
                     "service": {
                       "type": "string",
-                      "description": "behavior policy for unknown Service, Delete by default",
+                      "description": "Behavior policy for unknown Service, `Delete` by default",
                       "enum": [
+                        "",
                         "Retain",
                         "Delete"
                       ]
@@ -341,39 +418,1408 @@
                 },
                 "reconcileFailedObjects": {
                   "type": "object",
-                  "description": "what clickhouse-operator shall do when reconciling Kubernetes resources are failed, default behavior is `Retain`",
+                  "description": "Describes what clickhouse-operator should do with Kubernetes resources which are failed during reconcile.\nDefault behavior is `Retain`\"\n",
                   "properties": {
                     "statefulSet": {
                       "type": "string",
-                      "description": "behavior policy for failed StatefulSet reconciling, Retain by default",
+                      "description": "Behavior policy for failed StatefulSet, `Retain` by default",
                       "enum": [
+                        "",
                         "Retain",
                         "Delete"
                       ]
                     },
                     "pvc": {
                       "type": "string",
-                      "description": "behavior policy for failed PVC reconciling, Retain by default",
+                      "description": "Behavior policy for failed PVC, `Retain` by default",
                       "enum": [
+                        "",
                         "Retain",
                         "Delete"
                       ]
                     },
                     "configMap": {
                       "type": "string",
-                      "description": "behavior policy for failed ConfigMap reconciling, Retain by default",
+                      "description": "Behavior policy for failed ConfigMap, `Retain` by default",
                       "enum": [
+                        "",
                         "Retain",
                         "Delete"
                       ]
                     },
                     "service": {
                       "type": "string",
-                      "description": "behavior policy for failed Service reconciling, Retain by default",
+                      "description": "Behavior policy for failed Service, `Retain` by default",
                       "enum": [
+                        "",
                         "Retain",
                         "Delete"
                       ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "macros": {
+              "type": "object",
+              "description": "macros parameters",
+              "properties": {
+                "sections": {
+                  "type": "object",
+                  "description": "sections behaviour for macros",
+                  "properties": {
+                    "users": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on users",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "profiles": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on profiles",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "quotas": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on quotas",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "settings": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on settings",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "files": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on files",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "runtime": {
+              "type": "object",
+              "description": "runtime parameters for clickhouse-operator process which are used during reconcile cycle",
+              "properties": {
+                "reconcileShardsThreadsNumber": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65535,
+                  "description": "The maximum number of cluster shards that may be reconciled in parallel, 1 by default"
+                },
+                "reconcileShardsMaxConcurrencyPercent": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "The maximum percentage of cluster shards that may be reconciled in parallel, 50 percent by default."
+                }
+              },
+              "additionalProperties": false
+            },
+            "statefulSet": {
+              "type": "object",
+              "description": "Optional, StatefulSet reconcile behavior tuning",
+              "properties": {
+                "create": {
+                  "type": "object",
+                  "description": "Behavior during create StatefulSet",
+                  "properties": {
+                    "onFailure": {
+                      "type": "string",
+                      "description": "What to do in case created StatefulSet is not in 'Ready' after `reconcile.statefulSet.update.timeout` seconds.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet, leave it as it is.\n2. delete - delete newly created problematic StatefulSet and follow 'abort' path afterwards.\n3. ignore - ignore an error, pretend nothing happened, continue reconcile and move on to the next StatefulSet.\n",
+                      "enum": [
+                        "",
+                        "abort",
+                        "delete",
+                        "ignore"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "update": {
+                  "type": "object",
+                  "description": "Behavior during update StatefulSet",
+                  "properties": {
+                    "timeout": {
+                      "type": "integer",
+                      "description": "How many seconds to wait for StatefulSet to be 'Ready' during update",
+                      "minimum": 0,
+                      "maximum": 3600
+                    },
+                    "pollInterval": {
+                      "type": "integer",
+                      "description": "How many seconds to wait between checks for StatefulSet status during update",
+                      "minimum": 1,
+                      "maximum": 600
+                    },
+                    "onFailure": {
+                      "type": "string",
+                      "description": "What to do in case updated StatefulSet is not in 'Ready' after `reconcile.statefulSet.update.timeout` seconds.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet, leave it as it is.\n2. rollback - delete Pod and rollback StatefulSet to previous Generation. Follow 'abort' path afterwards.\n3. ignore - ignore an error, pretend nothing happened, continue reconcile and move on to the next StatefulSet.\n",
+                      "enum": [
+                        "",
+                        "abort",
+                        "rollback",
+                        "ignore"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "recreate": {
+                  "type": "object",
+                  "description": "Behavior during recreate StatefulSet",
+                  "properties": {
+                    "onDataLoss": {
+                      "type": "string",
+                      "description": "What to do in case operator needs to recreate StatefulSet due to PVC data loss or missing volumes.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet.\n2. recreate - proceed and recreate StatefulSet.\n",
+                      "enum": [
+                        "",
+                        "abort",
+                        "recreate"
+                      ]
+                    },
+                    "onUpdateFailure": {
+                      "type": "string",
+                      "description": "What to do in case operator needs to recreate StatefulSet due to update failure or StatefulSet not ready.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet.\n2. recreate - proceed and recreate StatefulSet.\n",
+                      "enum": [
+                        "",
+                        "abort",
+                        "recreate"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "host": {
+              "type": "object",
+              "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host:\n  - to be excluded from a ClickHouse cluster\n  - to complete all running queries\n  - to be included into a ClickHouse cluster\nrespectfully before moving forward\n",
+              "properties": {
+                "wait": {
+                  "type": "object",
+                  "properties": {
+                    "exclude": {
+                      "type": "string",
+                      "description": "Allows to stop all ClickHouse clusters defined in a CHI.\nWorks as the following:\n - When `stop` is `1` operator sets `Replicas: 0` in each StatefulSet. Thie leads to having all `Pods` and `Service` deleted. All PVCs are kept intact.\n - When `stop` is `0` operator sets `Replicas: 1` and `Pod`s and `Service`s will created again and all retained PVCs will be attached to `Pod`s.\n",
+                      "enum": [
+                        "",
+                        "0",
+                        "1",
+                        "False",
+                        "false",
+                        "True",
+                        "true",
+                        "No",
+                        "no",
+                        "Yes",
+                        "yes",
+                        "Off",
+                        "off",
+                        "On",
+                        "on",
+                        "Disable",
+                        "disable",
+                        "Enable",
+                        "enable",
+                        "Disabled",
+                        "disabled",
+                        "Enabled",
+                        "enabled"
+                      ]
+                    },
+                    "queries": {
+                      "type": "string",
+                      "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host to complete all running queries",
+                      "enum": [
+                        "",
+                        "0",
+                        "1",
+                        "False",
+                        "false",
+                        "True",
+                        "true",
+                        "No",
+                        "no",
+                        "Yes",
+                        "yes",
+                        "Off",
+                        "off",
+                        "On",
+                        "on",
+                        "Disable",
+                        "disable",
+                        "Enable",
+                        "enable",
+                        "Disabled",
+                        "disabled",
+                        "Enabled",
+                        "enabled"
+                      ]
+                    },
+                    "include": {
+                      "type": "string",
+                      "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host to be included into a ClickHouse cluster",
+                      "enum": [
+                        "",
+                        "0",
+                        "1",
+                        "False",
+                        "false",
+                        "True",
+                        "true",
+                        "No",
+                        "no",
+                        "Yes",
+                        "yes",
+                        "Off",
+                        "off",
+                        "On",
+                        "on",
+                        "Disable",
+                        "disable",
+                        "Enable",
+                        "enable",
+                        "Disabled",
+                        "disabled",
+                        "Enabled",
+                        "enabled"
+                      ]
+                    },
+                    "replicas": {
+                      "type": "object",
+                      "description": "Whether the operator during reconcile procedure should wait for replicas to catch-up",
+                      "properties": {
+                        "all": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should wait for all replicas to catch-up",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "new": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should wait for new replicas to catch-up",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "delay": {
+                          "type": "integer",
+                          "description": "replication max absolute delay to consider replica is not delayed"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "probes": {
+                      "type": "object",
+                      "description": "What probes the operator should wait during host launch procedure",
+                      "properties": {
+                        "startup": {
+                          "type": "string",
+                          "description": "Whether the operator during host launch procedure should wait for startup probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to do not wait.\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "readiness": {
+                          "type": "string",
+                          "description": "Whether the operator during host launch procedure should wait for ready probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to wait.\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "drop": {
+                  "type": "object",
+                  "properties": {
+                    "replicas": {
+                      "type": "object",
+                      "description": "Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated\n",
+                      "properties": {
+                        "onDelete": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop replicas when replica is deleted\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "onLostVolume": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop replicas when replica volume is lost\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "active": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop active replicas when replica is deleted or recreated\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "reconcile": {
+          "type": "object",
+          "description": "Optional, allows tuning reconciling cycle for ClickhouseInstallation from clickhouse-operator side",
+          "properties": {
+            "policy": {
+              "type": "string",
+              "description": "DISCUSSED TO BE DEPRECATED\nSyntax sugar\nOverrides all three 'reconcile.host.wait.{exclude, queries, include}' values from the operator's config\nPossible values:\n - wait - should wait to exclude host, complete queries and include host back into the cluster\n - nowait - should NOT wait to exclude host, complete queries and include host back into the cluster\n",
+              "enum": [
+                "",
+                "wait",
+                "nowait"
+              ]
+            },
+            "configMapPropagationTimeout": {
+              "type": "integer",
+              "description": "Timeout in seconds for `clickhouse-operator` to wait for modified `ConfigMap` to propagate into the `Pod`\nMore details: https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically\n",
+              "minimum": 0,
+              "maximum": 3600
+            },
+            "cleanup": {
+              "type": "object",
+              "description": "Optional, defines behavior for cleanup Kubernetes resources during reconcile cycle",
+              "properties": {
+                "unknownObjects": {
+                  "type": "object",
+                  "description": "Describes what clickhouse-operator should do with found Kubernetes resources which should be managed by clickhouse-operator,\nbut do not have `ownerReference` to any currently managed `ClickHouseInstallation` resource.\nDefault behavior is `Delete`\"\n",
+                  "properties": {
+                    "statefulSet": {
+                      "type": "string",
+                      "description": "Behavior policy for unknown StatefulSet, `Delete` by default",
+                      "enum": [
+                        "",
+                        "Retain",
+                        "Delete"
+                      ]
+                    },
+                    "pvc": {
+                      "type": "string",
+                      "description": "Behavior policy for unknown PVC, `Delete` by default",
+                      "enum": [
+                        "",
+                        "Retain",
+                        "Delete"
+                      ]
+                    },
+                    "configMap": {
+                      "type": "string",
+                      "description": "Behavior policy for unknown ConfigMap, `Delete` by default",
+                      "enum": [
+                        "",
+                        "Retain",
+                        "Delete"
+                      ]
+                    },
+                    "service": {
+                      "type": "string",
+                      "description": "Behavior policy for unknown Service, `Delete` by default",
+                      "enum": [
+                        "",
+                        "Retain",
+                        "Delete"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "reconcileFailedObjects": {
+                  "type": "object",
+                  "description": "Describes what clickhouse-operator should do with Kubernetes resources which are failed during reconcile.\nDefault behavior is `Retain`\"\n",
+                  "properties": {
+                    "statefulSet": {
+                      "type": "string",
+                      "description": "Behavior policy for failed StatefulSet, `Retain` by default",
+                      "enum": [
+                        "",
+                        "Retain",
+                        "Delete"
+                      ]
+                    },
+                    "pvc": {
+                      "type": "string",
+                      "description": "Behavior policy for failed PVC, `Retain` by default",
+                      "enum": [
+                        "",
+                        "Retain",
+                        "Delete"
+                      ]
+                    },
+                    "configMap": {
+                      "type": "string",
+                      "description": "Behavior policy for failed ConfigMap, `Retain` by default",
+                      "enum": [
+                        "",
+                        "Retain",
+                        "Delete"
+                      ]
+                    },
+                    "service": {
+                      "type": "string",
+                      "description": "Behavior policy for failed Service, `Retain` by default",
+                      "enum": [
+                        "",
+                        "Retain",
+                        "Delete"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "macros": {
+              "type": "object",
+              "description": "macros parameters",
+              "properties": {
+                "sections": {
+                  "type": "object",
+                  "description": "sections behaviour for macros",
+                  "properties": {
+                    "users": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on users",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "profiles": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on profiles",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "quotas": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on quotas",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "settings": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on settings",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "files": {
+                      "type": "object",
+                      "description": "sections behaviour for macros on files",
+                      "properties": {
+                        "enabled": {
+                          "type": "string",
+                          "description": "enabled or not",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "runtime": {
+              "type": "object",
+              "description": "runtime parameters for clickhouse-operator process which are used during reconcile cycle",
+              "properties": {
+                "reconcileShardsThreadsNumber": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65535,
+                  "description": "The maximum number of cluster shards that may be reconciled in parallel, 1 by default"
+                },
+                "reconcileShardsMaxConcurrencyPercent": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "The maximum percentage of cluster shards that may be reconciled in parallel, 50 percent by default."
+                }
+              },
+              "additionalProperties": false
+            },
+            "statefulSet": {
+              "type": "object",
+              "description": "Optional, StatefulSet reconcile behavior tuning",
+              "properties": {
+                "create": {
+                  "type": "object",
+                  "description": "Behavior during create StatefulSet",
+                  "properties": {
+                    "onFailure": {
+                      "type": "string",
+                      "description": "What to do in case created StatefulSet is not in 'Ready' after `reconcile.statefulSet.update.timeout` seconds.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet, leave it as it is.\n2. delete - delete newly created problematic StatefulSet and follow 'abort' path afterwards.\n3. ignore - ignore an error, pretend nothing happened, continue reconcile and move on to the next StatefulSet.\n",
+                      "enum": [
+                        "",
+                        "abort",
+                        "delete",
+                        "ignore"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "update": {
+                  "type": "object",
+                  "description": "Behavior during update StatefulSet",
+                  "properties": {
+                    "timeout": {
+                      "type": "integer",
+                      "description": "How many seconds to wait for StatefulSet to be 'Ready' during update",
+                      "minimum": 0,
+                      "maximum": 3600
+                    },
+                    "pollInterval": {
+                      "type": "integer",
+                      "description": "How many seconds to wait between checks for StatefulSet status during update",
+                      "minimum": 1,
+                      "maximum": 600
+                    },
+                    "onFailure": {
+                      "type": "string",
+                      "description": "What to do in case updated StatefulSet is not in 'Ready' after `reconcile.statefulSet.update.timeout` seconds.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet, leave it as it is.\n2. rollback - delete Pod and rollback StatefulSet to previous Generation. Follow 'abort' path afterwards.\n3. ignore - ignore an error, pretend nothing happened, continue reconcile and move on to the next StatefulSet.\n",
+                      "enum": [
+                        "",
+                        "abort",
+                        "rollback",
+                        "ignore"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "recreate": {
+                  "type": "object",
+                  "description": "Behavior during recreate StatefulSet",
+                  "properties": {
+                    "onDataLoss": {
+                      "type": "string",
+                      "description": "What to do in case operator needs to recreate StatefulSet due to PVC data loss or missing volumes.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet.\n2. recreate - proceed and recreate StatefulSet.\n",
+                      "enum": [
+                        "",
+                        "abort",
+                        "recreate"
+                      ]
+                    },
+                    "onUpdateFailure": {
+                      "type": "string",
+                      "description": "What to do in case operator needs to recreate StatefulSet due to update failure or StatefulSet not ready.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet.\n2. recreate - proceed and recreate StatefulSet.\n",
+                      "enum": [
+                        "",
+                        "abort",
+                        "recreate"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            },
+            "host": {
+              "type": "object",
+              "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host:\n  - to be excluded from a ClickHouse cluster\n  - to complete all running queries\n  - to be included into a ClickHouse cluster\nrespectfully before moving forward\n",
+              "properties": {
+                "wait": {
+                  "type": "object",
+                  "properties": {
+                    "exclude": {
+                      "type": "string",
+                      "description": "Allows to stop all ClickHouse clusters defined in a CHI.\nWorks as the following:\n - When `stop` is `1` operator sets `Replicas: 0` in each StatefulSet. Thie leads to having all `Pods` and `Service` deleted. All PVCs are kept intact.\n - When `stop` is `0` operator sets `Replicas: 1` and `Pod`s and `Service`s will created again and all retained PVCs will be attached to `Pod`s.\n",
+                      "enum": [
+                        "",
+                        "0",
+                        "1",
+                        "False",
+                        "false",
+                        "True",
+                        "true",
+                        "No",
+                        "no",
+                        "Yes",
+                        "yes",
+                        "Off",
+                        "off",
+                        "On",
+                        "on",
+                        "Disable",
+                        "disable",
+                        "Enable",
+                        "enable",
+                        "Disabled",
+                        "disabled",
+                        "Enabled",
+                        "enabled"
+                      ]
+                    },
+                    "queries": {
+                      "type": "string",
+                      "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host to complete all running queries",
+                      "enum": [
+                        "",
+                        "0",
+                        "1",
+                        "False",
+                        "false",
+                        "True",
+                        "true",
+                        "No",
+                        "no",
+                        "Yes",
+                        "yes",
+                        "Off",
+                        "off",
+                        "On",
+                        "on",
+                        "Disable",
+                        "disable",
+                        "Enable",
+                        "enable",
+                        "Disabled",
+                        "disabled",
+                        "Enabled",
+                        "enabled"
+                      ]
+                    },
+                    "include": {
+                      "type": "string",
+                      "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host to be included into a ClickHouse cluster",
+                      "enum": [
+                        "",
+                        "0",
+                        "1",
+                        "False",
+                        "false",
+                        "True",
+                        "true",
+                        "No",
+                        "no",
+                        "Yes",
+                        "yes",
+                        "Off",
+                        "off",
+                        "On",
+                        "on",
+                        "Disable",
+                        "disable",
+                        "Enable",
+                        "enable",
+                        "Disabled",
+                        "disabled",
+                        "Enabled",
+                        "enabled"
+                      ]
+                    },
+                    "replicas": {
+                      "type": "object",
+                      "description": "Whether the operator during reconcile procedure should wait for replicas to catch-up",
+                      "properties": {
+                        "all": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should wait for all replicas to catch-up",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "new": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should wait for new replicas to catch-up",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "delay": {
+                          "type": "integer",
+                          "description": "replication max absolute delay to consider replica is not delayed"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "probes": {
+                      "type": "object",
+                      "description": "What probes the operator should wait during host launch procedure",
+                      "properties": {
+                        "startup": {
+                          "type": "string",
+                          "description": "Whether the operator during host launch procedure should wait for startup probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to do not wait.\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "readiness": {
+                          "type": "string",
+                          "description": "Whether the operator during host launch procedure should wait for ready probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to wait.\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "drop": {
+                  "type": "object",
+                  "properties": {
+                    "replicas": {
+                      "type": "object",
+                      "description": "Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated\n",
+                      "properties": {
+                        "onDelete": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop replicas when replica is deleted\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "onLostVolume": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop replicas when replica volume is lost\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "active": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop active replicas when replica is deleted or recreated\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
                     }
                   },
                   "additionalProperties": false
@@ -390,7 +1836,7 @@
           "properties": {
             "replicasUseFQDN": {
               "type": "string",
-              "description": "define should replicas be specified by FQDN in `<host></host>`.\nIn case of \"no\" will use short hostname and clickhouse-server will use kubernetes default suffixes for DNS lookup\n\"yes\" by default\n",
+              "description": "define should replicas be specified by FQDN in `<host></host>`.\nIn case of \"no\" will use short hostname and clickhouse-server will use kubernetes default suffixes for DNS lookup\n\"no\" by default\n",
               "enum": [
                 "",
                 "0",
@@ -475,7 +1921,15 @@
                 },
                 "serviceTemplate": {
                   "type": "string",
-                  "description": "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                  "description": "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                },
+                "serviceTemplates": {
+                  "type": "array",
+                  "description": "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource",
+                  "nullable": true,
+                  "items": {
+                    "type": "string"
+                  }
                 },
                 "clusterServiceTemplate": {
                   "type": "string",
@@ -491,7 +1945,7 @@
                 },
                 "volumeClaimTemplate": {
                   "type": "string",
-                  "description": "DEPRECATED! VolumeClaimTemplate is deprecated in favor of DataVolumeClaimTemplate and LogVolumeClaimTemplate"
+                  "description": "optional, alias for dataVolumeClaimTemplate, template name from chi.spec.templates.volumeClaimTemplates, allows customization each `PVC` which will mount for clickhouse data directory in each `Pod` during render and reconcile every StatefulSet.spec resource described in `chi.spec.configuration.clusters`"
                 }
               },
               "additionalProperties": false
@@ -551,6 +2005,10 @@
                           "Enabled",
                           "enabled"
                         ]
+                      },
+                      "availabilityZone": {
+                        "type": "string",
+                        "description": "availability zone for Zookeeper node"
                       }
                     },
                     "additionalProperties": false
@@ -571,13 +2029,42 @@
                 "identity": {
                   "type": "string",
                   "description": "optional access credentials string with `user:password` format used when use digest authorization in Zookeeper"
+                },
+                "use_compression": {
+                  "type": "string",
+                  "description": "Enables compression in Keeper protocol if set to true",
+                  "enum": [
+                    "",
+                    "0",
+                    "1",
+                    "False",
+                    "false",
+                    "True",
+                    "true",
+                    "No",
+                    "no",
+                    "Yes",
+                    "yes",
+                    "Off",
+                    "off",
+                    "On",
+                    "on",
+                    "Disable",
+                    "disable",
+                    "Enable",
+                    "enable",
+                    "Disabled",
+                    "disabled",
+                    "Enabled",
+                    "enabled"
+                  ]
                 }
               },
               "additionalProperties": false
             },
             "users": {
               "type": "object",
-              "description": "allows configure <yandex><users>..</users></yandex> section in each `Pod` during generate `ConfigMap` which will mount in `/etc/clickhouse-server/users.d/`\nyou can configure password hashed, authorization restrictions, database level security row filters etc.\nMore details: https://clickhouse.tech/docs/en/operations/settings/settings-users/\nYour yaml code will convert to XML, see examples https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#specconfigurationusers\n",
+              "description": "allows configure <yandex><users>..</users></yandex> section in each `Pod` during generate `ConfigMap` which will mount in `/etc/clickhouse-server/users.d/`\nyou can configure password hashed, authorization restrictions, database level security row filters etc.\nMore details: https://clickhouse.tech/docs/en/operations/settings/settings-users/\nYour yaml code will convert to XML, see examples https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#specconfigurationusers\n\nany key could contains `valueFrom` with `secretKeyRef` which allow pass password from kubernetes secrets\nsecret value will pass in `pod.spec.containers.evn`, and generate with from_env=XXX in XML in /etc/clickhouse-server/users.d/chop-generated-users.xml\nit not allow automatically updates when updates `secret`, change spec.taskID for manually trigger reconcile cycle\n\nlook into https://github.com/Altinity/clickhouse-operator/blob/master/docs/chi-examples/05-settings-01-overview.yaml for examples\n\nany key with prefix `k8s_secret_` shall has value with format namespace/secret/key or secret/key\nin this case value from secret will write directly into XML tag during render *-usersd ConfigMap\n\nany key with prefix `k8s_secret_env` shall has value with format namespace/secret/key or secret/key\nin this case value from secret will write into environment variable and write to XML tag via from_env=XXX\n\nlook into https://github.com/Altinity/clickhouse-operator/blob/master/docs/chi-examples/05-settings-01-overview.yaml for examples\n",
               "x-kubernetes-preserve-unknown-fields": true
             },
             "profiles": {
@@ -592,23 +2079,23 @@
             },
             "settings": {
               "type": "object",
-              "description": "allows configure `clickhouse-server` settings inside <yandex>...</yandex> tag in each `Pod` during generate `ConfigMap` which will mount in `/etc/clickhouse-server/config.d/`\nMore details: https://clickhouse.tech/docs/en/operations/settings/settings/\nYour yaml code will convert to XML, see examples https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#specconfigurationsettings\n",
+              "description": "allows configure `clickhouse-server` settings inside <yandex>...</yandex> tag in each `Pod` during generate `ConfigMap` which will mount in `/etc/clickhouse-server/config.d/`\nMore details: https://clickhouse.tech/docs/en/operations/settings/settings/\nYour yaml code will convert to XML, see examples https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#specconfigurationsettings\n\nany key could contains `valueFrom` with `secretKeyRef` which allow pass password from kubernetes secrets\nlook into https://github.com/Altinity/clickhouse-operator/blob/master/docs/chi-examples/05-settings-01-overview.yaml for examples\n\nsecret value will pass in `pod.spec.env`, and generate with from_env=XXX in XML in /etc/clickhouse-server/config.d/chop-generated-settings.xml\nit not allow automatically updates when updates `secret`, change spec.taskID for manually trigger reconcile cycle\n",
               "x-kubernetes-preserve-unknown-fields": true
             },
             "files": {
               "type": "object",
-              "description": "allows define content of any setting file inside each `Pod` during generate `ConfigMap` which will mount in `/etc/clickhouse-server/config.d/` or `/etc/clickhouse-server/conf.d/` or `/etc/clickhouse-server/users.d/`\nevery key in this object is the file name\nevery value in this object is the file content\nyou can use `!!binary |` and base64 for binary files, see details here https://yaml.org/type/binary.html\neach key could contains prefix like USERS, COMMON, HOST or config.d, users.d, cond.d, wrong prefixes will ignored, subfolders also will ignored\nMore details: https://github.com/Altinity/clickhouse-operator/blob/master/docs/chi-examples/05-settings-05-files-nested.yaml\n",
+              "description": "allows define content of any setting file inside each `Pod` during generate `ConfigMap` which will mount in `/etc/clickhouse-server/config.d/` or `/etc/clickhouse-server/conf.d/` or `/etc/clickhouse-server/users.d/`\nevery key in this object is the file name\nevery value in this object is the file content\nyou can use `!!binary |` and base64 for binary files, see details here https://yaml.org/type/binary.html\neach key could contains prefix like {common}, {users}, {hosts} or config.d, users.d, conf.d, wrong prefixes will be ignored, subfolders also will be ignored\nMore details: https://github.com/Altinity/clickhouse-operator/blob/master/docs/chi-examples/05-settings-05-files-nested.yaml\n\nany key could contains `valueFrom` with `secretKeyRef` which allow pass values from kubernetes secrets\nsecrets will mounted into pod as separate volume in /etc/clickhouse-server/secrets.d/\nand will automatically update when update secret\nit useful for pass SSL certificates from cert-manager or similar tool\nlook into https://github.com/Altinity/clickhouse-operator/blob/master/docs/chi-examples/05-settings-01-overview.yaml for examples\n",
               "x-kubernetes-preserve-unknown-fields": true
             },
             "clusters": {
               "type": "array",
-              "description": "describes ClickHouse clusters layout and allows change settings on cluster-level, shard-level and replica-level\nevery cluster is a set of StatefulSet, one StatefulSet contains only one Pod with `clickhouse-server`\nall Pods will rendered in <remote_server> part of ClickHouse configs, mounted from ConfigMap as `/etc/clickhouse-server/config.d/chop-generated-remote_servers.xml`\nClusters will use for Distributed table engine, more details: https://clickhouse.tech/docs/en/engines/table-engines/special/distributed/\nIf `cluster` contains zookeeper settings (could be inherited from top `chi` level), when you can create *ReplicatedMergeTree tables\n",
+              "description": "describes clusters layout and allows change settings on cluster-level, shard-level and replica-level\nevery cluster is a set of StatefulSet, one StatefulSet contains only one Pod with `clickhouse-server`\nall Pods will rendered in <remote_server> part of ClickHouse configs, mounted from ConfigMap as `/etc/clickhouse-server/config.d/chop-generated-remote_servers.xml`\nClusters will use for Distributed table engine, more details: https://clickhouse.tech/docs/en/engines/table-engines/special/distributed/\nIf `cluster` contains zookeeper settings (could be inherited from top `chi` level), when you can create *ReplicatedMergeTree tables\n",
               "items": {
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string",
-                    "description": "cluster name, used to identify set of ClickHouse servers and wide used during generate names of related Kubernetes resources",
+                    "description": "cluster name, used to identify set of servers and wide used during generate names of related Kubernetes resources",
                     "minLength": 1,
                     "maxLength": 15,
                     "pattern": "^[a-zA-Z0-9-]{0,15}$"
@@ -661,6 +2148,10 @@
                                 "Enabled",
                                 "enabled"
                               ]
+                            },
+                            "availabilityZone": {
+                              "type": "string",
+                              "description": "availability zone for Zookeeper node"
                             }
                           },
                           "additionalProperties": false
@@ -681,6 +2172,35 @@
                       "identity": {
                         "type": "string",
                         "description": "optional access credentials string with `user:password` format used when use digest authorization in Zookeeper"
+                      },
+                      "use_compression": {
+                        "type": "string",
+                        "description": "Enables compression in Keeper protocol if set to true",
+                        "enum": [
+                          "",
+                          "0",
+                          "1",
+                          "False",
+                          "false",
+                          "True",
+                          "true",
+                          "No",
+                          "no",
+                          "Yes",
+                          "yes",
+                          "Off",
+                          "off",
+                          "On",
+                          "on",
+                          "Disable",
+                          "disable",
+                          "Enable",
+                          "enable",
+                          "Disabled",
+                          "disabled",
+                          "Enabled",
+                          "enabled"
+                        ]
                       }
                     },
                     "additionalProperties": false
@@ -717,7 +2237,15 @@
                       },
                       "serviceTemplate": {
                         "type": "string",
-                        "description": "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                        "description": "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                      },
+                      "serviceTemplates": {
+                        "type": "array",
+                        "description": "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource",
+                        "nullable": true,
+                        "items": {
+                          "type": "string"
+                        }
                       },
                       "clusterServiceTemplate": {
                         "type": "string",
@@ -733,7 +2261,7 @@
                       },
                       "volumeClaimTemplate": {
                         "type": "string",
-                        "description": "DEPRECATED! VolumeClaimTemplate is deprecated in favor of DataVolumeClaimTemplate and LogVolumeClaimTemplate"
+                        "description": "optional, alias for dataVolumeClaimTemplate, template name from chi.spec.templates.volumeClaimTemplates, allows customization each `PVC` which will mount for clickhouse data directory in each `Pod` during render and reconcile every StatefulSet.spec resource described in `chi.spec.configuration.clusters`"
                       }
                     },
                     "additionalProperties": false
@@ -746,6 +2274,7 @@
                         "type": "string",
                         "description": "how schema is propagated within a replica",
                         "enum": [
+                          "",
                           "None",
                           "All"
                         ]
@@ -754,6 +2283,7 @@
                         "type": "string",
                         "description": "how schema is propagated between shards",
                         "enum": [
+                          "",
                           "None",
                           "All",
                           "DistributedTablesOnly"
@@ -890,25 +2420,416 @@
                     },
                     "additionalProperties": false
                   },
+                  "pdbManaged": {
+                    "type": "string",
+                    "description": "Specifies whether the Pod Disruption Budget (PDB) should be managed.\nDuring the next installation, if PDB management is enabled, the operator will\nattempt to retrieve any existing PDB. If none is found, it will create a new one\nand initiate a reconciliation loop. If PDB management is disabled, the existing PDB\nwill remain intact, and the reconciliation loop will not be executed. By default,\nPDB management is enabled.\n",
+                    "enum": [
+                      "",
+                      "0",
+                      "1",
+                      "False",
+                      "false",
+                      "True",
+                      "true",
+                      "No",
+                      "no",
+                      "Yes",
+                      "yes",
+                      "Off",
+                      "off",
+                      "On",
+                      "on",
+                      "Disable",
+                      "disable",
+                      "Enable",
+                      "enable",
+                      "Disabled",
+                      "disabled",
+                      "Enabled",
+                      "enabled"
+                    ]
+                  },
+                  "pdbMaxUnavailable": {
+                    "type": "integer",
+                    "description": "Pod eviction is allowed if at most \"pdbMaxUnavailable\" pods are unavailable after the eviction,\ni.e. even in absence of the evicted pod. For example, one can prevent all voluntary evictions\nby specifying 0. This is a mutually exclusive setting with \"minAvailable\".\n",
+                    "minimum": 0,
+                    "maximum": 65535
+                  },
+                  "reconcile": {
+                    "type": "object",
+                    "description": "allow tuning reconciling process",
+                    "properties": {
+                      "runtime": {
+                        "type": "object",
+                        "description": "runtime parameters for clickhouse-operator process which are used during reconcile cycle",
+                        "properties": {
+                          "reconcileShardsThreadsNumber": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 65535,
+                            "description": "The maximum number of cluster shards that may be reconciled in parallel, 1 by default"
+                          },
+                          "reconcileShardsMaxConcurrencyPercent": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "description": "The maximum percentage of cluster shards that may be reconciled in parallel, 50 percent by default."
+                          }
+                        },
+                        "additionalProperties": false
+                      },
+                      "host": {
+                        "type": "object",
+                        "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host:\n  - to be excluded from a ClickHouse cluster\n  - to complete all running queries\n  - to be included into a ClickHouse cluster\nrespectfully before moving forward\n",
+                        "properties": {
+                          "wait": {
+                            "type": "object",
+                            "properties": {
+                              "exclude": {
+                                "type": "string",
+                                "description": "Allows to stop all ClickHouse clusters defined in a CHI.\nWorks as the following:\n - When `stop` is `1` operator sets `Replicas: 0` in each StatefulSet. Thie leads to having all `Pods` and `Service` deleted. All PVCs are kept intact.\n - When `stop` is `0` operator sets `Replicas: 1` and `Pod`s and `Service`s will created again and all retained PVCs will be attached to `Pod`s.\n",
+                                "enum": [
+                                  "",
+                                  "0",
+                                  "1",
+                                  "False",
+                                  "false",
+                                  "True",
+                                  "true",
+                                  "No",
+                                  "no",
+                                  "Yes",
+                                  "yes",
+                                  "Off",
+                                  "off",
+                                  "On",
+                                  "on",
+                                  "Disable",
+                                  "disable",
+                                  "Enable",
+                                  "enable",
+                                  "Disabled",
+                                  "disabled",
+                                  "Enabled",
+                                  "enabled"
+                                ]
+                              },
+                              "queries": {
+                                "type": "string",
+                                "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host to complete all running queries",
+                                "enum": [
+                                  "",
+                                  "0",
+                                  "1",
+                                  "False",
+                                  "false",
+                                  "True",
+                                  "true",
+                                  "No",
+                                  "no",
+                                  "Yes",
+                                  "yes",
+                                  "Off",
+                                  "off",
+                                  "On",
+                                  "on",
+                                  "Disable",
+                                  "disable",
+                                  "Enable",
+                                  "enable",
+                                  "Disabled",
+                                  "disabled",
+                                  "Enabled",
+                                  "enabled"
+                                ]
+                              },
+                              "include": {
+                                "type": "string",
+                                "description": "Whether the operator during reconcile procedure should wait for a ClickHouse host to be included into a ClickHouse cluster",
+                                "enum": [
+                                  "",
+                                  "0",
+                                  "1",
+                                  "False",
+                                  "false",
+                                  "True",
+                                  "true",
+                                  "No",
+                                  "no",
+                                  "Yes",
+                                  "yes",
+                                  "Off",
+                                  "off",
+                                  "On",
+                                  "on",
+                                  "Disable",
+                                  "disable",
+                                  "Enable",
+                                  "enable",
+                                  "Disabled",
+                                  "disabled",
+                                  "Enabled",
+                                  "enabled"
+                                ]
+                              },
+                              "replicas": {
+                                "type": "object",
+                                "description": "Whether the operator during reconcile procedure should wait for replicas to catch-up",
+                                "properties": {
+                                  "all": {
+                                    "type": "string",
+                                    "description": "Whether the operator during reconcile procedure should wait for all replicas to catch-up",
+                                    "enum": [
+                                      "",
+                                      "0",
+                                      "1",
+                                      "False",
+                                      "false",
+                                      "True",
+                                      "true",
+                                      "No",
+                                      "no",
+                                      "Yes",
+                                      "yes",
+                                      "Off",
+                                      "off",
+                                      "On",
+                                      "on",
+                                      "Disable",
+                                      "disable",
+                                      "Enable",
+                                      "enable",
+                                      "Disabled",
+                                      "disabled",
+                                      "Enabled",
+                                      "enabled"
+                                    ]
+                                  },
+                                  "new": {
+                                    "type": "string",
+                                    "description": "Whether the operator during reconcile procedure should wait for new replicas to catch-up",
+                                    "enum": [
+                                      "",
+                                      "0",
+                                      "1",
+                                      "False",
+                                      "false",
+                                      "True",
+                                      "true",
+                                      "No",
+                                      "no",
+                                      "Yes",
+                                      "yes",
+                                      "Off",
+                                      "off",
+                                      "On",
+                                      "on",
+                                      "Disable",
+                                      "disable",
+                                      "Enable",
+                                      "enable",
+                                      "Disabled",
+                                      "disabled",
+                                      "Enabled",
+                                      "enabled"
+                                    ]
+                                  },
+                                  "delay": {
+                                    "type": "integer",
+                                    "description": "replication max absolute delay to consider replica is not delayed"
+                                  }
+                                },
+                                "additionalProperties": false
+                              },
+                              "probes": {
+                                "type": "object",
+                                "description": "What probes the operator should wait during host launch procedure",
+                                "properties": {
+                                  "startup": {
+                                    "type": "string",
+                                    "description": "Whether the operator during host launch procedure should wait for startup probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to do not wait.\n",
+                                    "enum": [
+                                      "",
+                                      "0",
+                                      "1",
+                                      "False",
+                                      "false",
+                                      "True",
+                                      "true",
+                                      "No",
+                                      "no",
+                                      "Yes",
+                                      "yes",
+                                      "Off",
+                                      "off",
+                                      "On",
+                                      "on",
+                                      "Disable",
+                                      "disable",
+                                      "Enable",
+                                      "enable",
+                                      "Disabled",
+                                      "disabled",
+                                      "Enabled",
+                                      "enabled"
+                                    ]
+                                  },
+                                  "readiness": {
+                                    "type": "string",
+                                    "description": "Whether the operator during host launch procedure should wait for ready probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to wait.\n",
+                                    "enum": [
+                                      "",
+                                      "0",
+                                      "1",
+                                      "False",
+                                      "false",
+                                      "True",
+                                      "true",
+                                      "No",
+                                      "no",
+                                      "Yes",
+                                      "yes",
+                                      "Off",
+                                      "off",
+                                      "On",
+                                      "on",
+                                      "Disable",
+                                      "disable",
+                                      "Enable",
+                                      "enable",
+                                      "Disabled",
+                                      "disabled",
+                                      "Enabled",
+                                      "enabled"
+                                    ]
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            "additionalProperties": false
+                          },
+                          "drop": {
+                            "type": "object",
+                            "properties": {
+                              "replicas": {
+                                "type": "object",
+                                "description": "Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated\n",
+                                "properties": {
+                                  "onDelete": {
+                                    "type": "string",
+                                    "description": "Whether the operator during reconcile procedure should drop replicas when replica is deleted\n",
+                                    "enum": [
+                                      "",
+                                      "0",
+                                      "1",
+                                      "False",
+                                      "false",
+                                      "True",
+                                      "true",
+                                      "No",
+                                      "no",
+                                      "Yes",
+                                      "yes",
+                                      "Off",
+                                      "off",
+                                      "On",
+                                      "on",
+                                      "Disable",
+                                      "disable",
+                                      "Enable",
+                                      "enable",
+                                      "Disabled",
+                                      "disabled",
+                                      "Enabled",
+                                      "enabled"
+                                    ]
+                                  },
+                                  "onLostVolume": {
+                                    "type": "string",
+                                    "description": "Whether the operator during reconcile procedure should drop replicas when replica volume is lost\n",
+                                    "enum": [
+                                      "",
+                                      "0",
+                                      "1",
+                                      "False",
+                                      "false",
+                                      "True",
+                                      "true",
+                                      "No",
+                                      "no",
+                                      "Yes",
+                                      "yes",
+                                      "Off",
+                                      "off",
+                                      "On",
+                                      "on",
+                                      "Disable",
+                                      "disable",
+                                      "Enable",
+                                      "enable",
+                                      "Disabled",
+                                      "disabled",
+                                      "Enabled",
+                                      "enabled"
+                                    ]
+                                  },
+                                  "active": {
+                                    "type": "string",
+                                    "description": "Whether the operator during reconcile procedure should drop active replicas when replica is deleted or recreated\n",
+                                    "enum": [
+                                      "",
+                                      "0",
+                                      "1",
+                                      "False",
+                                      "false",
+                                      "True",
+                                      "true",
+                                      "No",
+                                      "no",
+                                      "Yes",
+                                      "yes",
+                                      "Off",
+                                      "off",
+                                      "On",
+                                      "on",
+                                      "Disable",
+                                      "disable",
+                                      "Enable",
+                                      "enable",
+                                      "Disabled",
+                                      "disabled",
+                                      "Enabled",
+                                      "enabled"
+                                    ]
+                                  }
+                                },
+                                "additionalProperties": false
+                              }
+                            },
+                            "additionalProperties": false
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "additionalProperties": false
+                  },
                   "layout": {
                     "type": "object",
                     "description": "describe current cluster layout, how much shards in cluster, how much replica in shard\nallows override settings on each shard and replica separatelly\n",
                     "properties": {
-                      "type": {
-                        "type": "string",
-                        "description": "DEPRECATED - to be removed soon"
-                      },
                       "shardsCount": {
                         "type": "integer",
-                        "description": "how much shards for current ClickHouse cluster will run in Kubernetes, each shard contains shared-nothing part of data and contains set of replicas, cluster contains 1 shard by default"
+                        "description": "how much shards for current ClickHouse cluster will run in Kubernetes,\neach shard contains shared-nothing part of data and contains set of replicas,\ncluster contains 1 shard by default\"\n"
                       },
                       "replicasCount": {
                         "type": "integer",
-                        "description": "how much replicas in each shards for current ClickHouse cluster will run in Kubernetes, each replica is a separate `StatefulSet` which contains only one `Pod` with `clickhouse-server` instance, every shard contains 1 replica by default"
+                        "description": "how much replicas in each shards for current cluster will run in Kubernetes,\neach replica is a separate `StatefulSet` which contains only one `Pod` with `clickhouse-server` instance,\nevery shard contains 1 replica by default\"\n"
                       },
                       "shards": {
                         "type": "array",
-                        "description": "optional, allows override top-level `chi.spec.configuration`, cluster-level `chi.spec.configuration.clusters` settings for each shard separately, use it only if you fully understand what you do",
+                        "description": "optional, allows override top-level `chi.spec.configuration`, cluster-level\n`chi.spec.configuration.clusters` settings for each shard separately,\nuse it only if you fully understand what you do\"\n",
                         "items": {
                           "type": "object",
                           "properties": {
@@ -988,7 +2909,15 @@
                                 },
                                 "serviceTemplate": {
                                   "type": "string",
-                                  "description": "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                                  "description": "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                                },
+                                "serviceTemplates": {
+                                  "type": "array",
+                                  "description": "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
                                 },
                                 "clusterServiceTemplate": {
                                   "type": "string",
@@ -1004,7 +2933,7 @@
                                 },
                                 "volumeClaimTemplate": {
                                   "type": "string",
-                                  "description": "DEPRECATED! VolumeClaimTemplate is deprecated in favor of DataVolumeClaimTemplate and LogVolumeClaimTemplate"
+                                  "description": "optional, alias for dataVolumeClaimTemplate, template name from chi.spec.templates.volumeClaimTemplates, allows customization each `PVC` which will mount for clickhouse data directory in each `Pod` during render and reconcile every StatefulSet.spec resource described in `chi.spec.configuration.clusters`"
                                 }
                               },
                               "additionalProperties": false
@@ -1145,7 +3074,15 @@
                                       },
                                       "serviceTemplate": {
                                         "type": "string",
-                                        "description": "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                                        "description": "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                                      },
+                                      "serviceTemplates": {
+                                        "type": "array",
+                                        "description": "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource",
+                                        "nullable": true,
+                                        "items": {
+                                          "type": "string"
+                                        }
                                       },
                                       "clusterServiceTemplate": {
                                         "type": "string",
@@ -1161,7 +3098,7 @@
                                       },
                                       "volumeClaimTemplate": {
                                         "type": "string",
-                                        "description": "DEPRECATED! VolumeClaimTemplate is deprecated in favor of DataVolumeClaimTemplate and LogVolumeClaimTemplate"
+                                        "description": "optional, alias for dataVolumeClaimTemplate, template name from chi.spec.templates.volumeClaimTemplates, allows customization each `PVC` which will mount for clickhouse data directory in each `Pod` during render and reconcile every StatefulSet.spec resource described in `chi.spec.configuration.clusters`"
                                       }
                                     },
                                     "additionalProperties": false
@@ -1219,7 +3156,15 @@
                                 },
                                 "serviceTemplate": {
                                   "type": "string",
-                                  "description": "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                                  "description": "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                                },
+                                "serviceTemplates": {
+                                  "type": "array",
+                                  "description": "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource",
+                                  "nullable": true,
+                                  "items": {
+                                    "type": "string"
+                                  }
                                 },
                                 "clusterServiceTemplate": {
                                   "type": "string",
@@ -1235,7 +3180,7 @@
                                 },
                                 "volumeClaimTemplate": {
                                   "type": "string",
-                                  "description": "DEPRECATED! VolumeClaimTemplate is deprecated in favor of DataVolumeClaimTemplate and LogVolumeClaimTemplate"
+                                  "description": "optional, alias for dataVolumeClaimTemplate, template name from chi.spec.templates.volumeClaimTemplates, allows customization each `PVC` which will mount for clickhouse data directory in each `Pod` during render and reconcile every StatefulSet.spec resource described in `chi.spec.configuration.clusters`"
                                 }
                               },
                               "additionalProperties": false
@@ -1376,7 +3321,15 @@
                                       },
                                       "serviceTemplate": {
                                         "type": "string",
-                                        "description": "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                                        "description": "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                                      },
+                                      "serviceTemplates": {
+                                        "type": "array",
+                                        "description": "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource",
+                                        "nullable": true,
+                                        "items": {
+                                          "type": "string"
+                                        }
                                       },
                                       "clusterServiceTemplate": {
                                         "type": "string",
@@ -1392,7 +3345,7 @@
                                       },
                                       "volumeClaimTemplate": {
                                         "type": "string",
-                                        "description": "DEPRECATED! VolumeClaimTemplate is deprecated in favor of DataVolumeClaimTemplate and LogVolumeClaimTemplate"
+                                        "description": "optional, alias for dataVolumeClaimTemplate, template name from chi.spec.templates.volumeClaimTemplates, allows customization each `PVC` which will mount for clickhouse data directory in each `Pod` during render and reconcile every StatefulSet.spec resource described in `chi.spec.configuration.clusters`"
                                       }
                                     },
                                     "additionalProperties": false
@@ -1453,7 +3406,7 @@
                     "properties": {
                       "name": {
                         "type": "string",
-                        "description": "by default, hostname will generate, but this allows define custom name for each `clickhuse-server`",
+                        "description": "by default, hostname will generate, but this allows define custom name for each `clickhouse-server`",
                         "minLength": 1,
                         "maxLength": 15,
                         "pattern": "^[a-zA-Z0-9-]{0,15}$"
@@ -1576,7 +3529,15 @@
                           },
                           "serviceTemplate": {
                             "type": "string",
-                            "description": "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                            "description": "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                          },
+                          "serviceTemplates": {
+                            "type": "array",
+                            "description": "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource",
+                            "nullable": true,
+                            "items": {
+                              "type": "string"
+                            }
                           },
                           "clusterServiceTemplate": {
                             "type": "string",
@@ -1592,7 +3553,7 @@
                           },
                           "volumeClaimTemplate": {
                             "type": "string",
-                            "description": "DEPRECATED! VolumeClaimTemplate is deprecated in favor of DataVolumeClaimTemplate and LogVolumeClaimTemplate"
+                            "description": "optional, alias for dataVolumeClaimTemplate, template name from chi.spec.templates.volumeClaimTemplates, allows customization each `PVC` which will mount for clickhouse data directory in each `Pod` during render and reconcile every StatefulSet.spec resource described in `chi.spec.configuration.clusters`"
                           }
                         },
                         "additionalProperties": false
@@ -1616,7 +3577,7 @@
                   },
                   "generateName": {
                     "type": "string",
-                    "description": "allows define format for generated `Pod` name, look to https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#spectemplatesservicetemplates for details about aviailable template variables"
+                    "description": "allows define format for generated `Pod` name, look to https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#spectemplatesservicetemplates for details about available template variables"
                   },
                   "zone": {
                     "type": "object",
@@ -1694,20 +3655,20 @@
                         },
                         "topologyKey": {
                           "type": "string",
-                          "description": "use for inter-pod affinity look to `pod.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution.podAffinityTerm.topologyKey`, More info: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity"
+                          "description": "use for inter-pod affinity look to `pod.spec.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution.podAffinityTerm.topologyKey`,\nmore info: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity\"\n"
                         }
                       },
                       "additionalProperties": false
                     }
                   },
-                  "spec": {
-                    "type": "object",
-                    "description": "allows define whole Pod.spec inside StaefulSet.spec, look to https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates for details",
-                    "x-kubernetes-preserve-unknown-fields": true
-                  },
                   "metadata": {
                     "type": "object",
                     "description": "allows pass standard object's metadata from template to Pod\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata\n",
+                    "x-kubernetes-preserve-unknown-fields": true
+                  },
+                  "spec": {
+                    "type": "object",
+                    "description": "allows define whole Pod.spec inside StaefulSet.spec, look to https://kubernetes.io/docs/concepts/workloads/pods/#pod-templates for details",
                     "x-kubernetes-preserve-unknown-fields": true
                   }
                 },
@@ -1716,7 +3677,7 @@
             },
             "volumeClaimTemplates": {
               "type": "array",
-              "description": "allows define template for rendering `PVC` kubernetes resource, which would use inside `Pod` for mount clickhouse `data`, clickhouse `logs` or something else",
+              "description": "allows define template for rendering `PVC` kubernetes resource, which would use inside `Pod` for mount clickhouse `data`, clickhouse `logs` or something else\n",
               "items": {
                 "type": "object",
                 "properties": {
@@ -1768,11 +3729,11 @@
                   },
                   "generateName": {
                     "type": "string",
-                    "description": "allows define format for generated `Service` name, look to https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#spectemplatesservicetemplates for details about aviailable template variables"
+                    "description": "allows define format for generated `Service` name,\nlook to https://github.com/Altinity/clickhouse-operator/blob/master/docs/custom_resource_explained.md#spectemplatesservicetemplates\nfor details about available template variables\"\n"
                   },
                   "metadata": {
                     "type": "object",
-                    "description": "allows pass standard object's metadata from template to Service\nCould be use for define specificly for Cloud Provider metadata which impact to behavior of service\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/\n",
+                    "description": "allows pass standard object's metadata from template to Service\nCould be use for define specificly for Cloud Provider metadata which impact to behavior of service\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata\n",
                     "x-kubernetes-preserve-unknown-fields": true
                   },
                   "spec": {
@@ -1789,7 +3750,7 @@
         },
         "useTemplates": {
           "type": "array",
-          "description": "list of `ClickHouseInstallationTemplate` (chit) resource names which will merge with current `Chi` manifest during render Kubernetes resources to create related ClickHouse clusters",
+          "description": "list of `ClickHouseInstallationTemplate` (chit) resource names which will merge with current `CHI`\nmanifest during render Kubernetes resources to create related ClickHouse clusters\"\n",
           "items": {
             "type": "object",
             "properties": {
@@ -1799,7 +3760,7 @@
               },
               "namespace": {
                 "type": "string",
-                "description": "Kubernetes namespace where need search `chit` resource, depending on `watchNamespaces` settings in `clichouse-operator`"
+                "description": "Kubernetes namespace where need search `chit` resource, depending on `watchNamespaces` settings in `clickhouse-operator`"
               },
               "useType": {
                 "type": "string",

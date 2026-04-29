@@ -17,11 +17,9 @@
           "description": "Parameters for watch kubernetes resources which used by clickhouse-operator deployment",
           "properties": {
             "namespaces": {
-              "type": "array",
+              "type": "object",
               "description": "List of namespaces where clickhouse-operator watches for events.",
-              "items": {
-                "type": "string"
-              }
+              "x-kubernetes-preserve-unknown-fields": true
             }
           },
           "additionalProperties": false
@@ -38,18 +36,19 @@
                   "properties": {
                     "path": {
                       "type": "object",
+                      "description": "Each 'path' can be either absolute or relative.\nIn case path is absolute - it is used as is.\nIn case path is relative - it is relative to the folder where configuration file you are reading right now is located.\n",
                       "properties": {
                         "common": {
                           "type": "string",
-                          "description": "Path to the folder where ClickHouse configuration files common for all instances within a CHI are located. Default - config.d"
+                          "description": "Path to the folder where ClickHouse configuration files common for all instances within a CHI are located.\nDefault value - config.d\n"
                         },
                         "host": {
                           "type": "string",
-                          "description": "Path to the folder where ClickHouse configuration files unique for each instance (host) within a CHI are located. Default - conf.d"
+                          "description": "Path to the folder where ClickHouse configuration files unique for each instance (host) within a CHI are located.\nDefault value - conf.d\n"
                         },
                         "user": {
                           "type": "string",
-                          "description": "Path to the folder where ClickHouse configuration files with users settings are located. Files are common for all instances within a CHI. Default - users.d"
+                          "description": "Path to the folder where ClickHouse configuration files with users settings are located.\nFiles are common for all instances within a CHI.\nDefault value - users.d\n"
                         }
                       },
                       "additionalProperties": false
@@ -122,7 +121,8 @@
                         "description": "Set of configuration rules for specified ClickHouse version",
                         "items": {
                           "type": "object",
-                          "description": "setting: value pairs for configuration restart policy"
+                          "description": "setting: value pairs for configuration restart policy",
+                          "x-kubernetes-preserve-unknown-fields": true
                         }
                       }
                     },
@@ -194,6 +194,66 @@
               },
               "additionalProperties": false
             },
+            "addons": {
+              "type": "object",
+              "description": "Configuration addons specifies additional settings",
+              "properties": {
+                "rules": {
+                  "type": "array",
+                  "description": "Array of set of rules per specified ClickHouse versions",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "version": {
+                        "type": "string",
+                        "description": "ClickHouse version expression"
+                      },
+                      "spec": {
+                        "type": "object",
+                        "description": "spec",
+                        "properties": {
+                          "configuration": {
+                            "type": "object",
+                            "description": "allows configure multiple aspects and behavior for `clickhouse-server` instance and also allows describe multiple `clickhouse-server` clusters inside one `chi` resource",
+                            "properties": {
+                              "users": {
+                                "type": "object",
+                                "description": "see same section from CR spec",
+                                "x-kubernetes-preserve-unknown-fields": true
+                              },
+                              "profiles": {
+                                "type": "object",
+                                "description": "see same section from CR spec",
+                                "x-kubernetes-preserve-unknown-fields": true
+                              },
+                              "quotas": {
+                                "type": "object",
+                                "description": "see same section from CR spec",
+                                "x-kubernetes-preserve-unknown-fields": true
+                              },
+                              "settings": {
+                                "type": "object",
+                                "description": "see same section from CR spec",
+                                "x-kubernetes-preserve-unknown-fields": true
+                              },
+                              "files": {
+                                "type": "object",
+                                "description": "see same section from CR spec",
+                                "x-kubernetes-preserve-unknown-fields": true
+                              }
+                            },
+                            "additionalProperties": false
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
             "metrics": {
               "type": "object",
               "description": "parameters which use for connect to fetch metrics from clickhouse by clickhouse-operator",
@@ -210,6 +270,10 @@
                     }
                   },
                   "additionalProperties": false
+                },
+                "tablesRegexp": {
+                  "type": "string",
+                  "description": "Regexp to match tables in system database to fetch metrics from.\nMultiple tables can be matched using regexp. Matched tables are merged using merge() table function.\nDefault is \"^(metrics|custom_metrics)$\".\n"
                 }
               },
               "additionalProperties": false
@@ -228,6 +292,7 @@
                   "type": "string",
                   "description": "CHI template updates handling policy\nPossible policy values:\n  - ReadOnStart. Accept CHIT updates on the operators start only.\n  - ApplyOnNextReconcile. Accept CHIT updates at all time. Apply news CHITs on next regular reconcile of the CHI\n",
                   "enum": [
+                    "",
                     "ReadOnStart",
                     "ApplyOnNextReconcile"
                   ]
@@ -301,6 +366,21 @@
                     "onFailure": {
                       "type": "string",
                       "description": "What to do in case updated StatefulSet is not in Ready after `statefulSetUpdateTimeout` seconds\nPossible options:\n1. abort - do nothing, just break the process and wait for admin.\n2. rollback (default) - delete Pod and rollback StatefulSet to previous Generation. Pod would be recreated by StatefulSet based on rollback-ed configuration.\n3. ignore - ignore error, pretend nothing happened and move on to the next StatefulSet.\n"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "recreate": {
+                  "type": "object",
+                  "description": "Behavior during recreate StatefulSet",
+                  "properties": {
+                    "onDataLoss": {
+                      "type": "string",
+                      "description": "What to do in case operator needs to recreate StatefulSet due to PVC data loss or missing volumes.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet.\n2. recreate (default) - proceed and recreate StatefulSet.\n"
+                    },
+                    "onUpdateFailure": {
+                      "type": "string",
+                      "description": "What to do in case operator needs to recreate StatefulSet due to update failure or StatefulSet not ready.\nPossible options:\n1. abort - abort the process, do nothing with the problematic StatefulSet.\n2. recreate (default) - proceed and recreate StatefulSet.\n"
                     }
                   },
                   "additionalProperties": false
@@ -401,6 +481,240 @@
                         "Enabled",
                         "enabled"
                       ]
+                    },
+                    "replicas": {
+                      "type": "object",
+                      "description": "Whether the operator during reconcile procedure should wait for replicas to catch-up",
+                      "properties": {
+                        "all": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should wait for all replicas to catch-up",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "new": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should wait for new replicas to catch-up",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "delay": {
+                          "type": "integer",
+                          "description": "replication max absolute delay to consider replica is not delayed"
+                        }
+                      },
+                      "additionalProperties": false
+                    },
+                    "probes": {
+                      "type": "object",
+                      "description": "What probes the operator should wait during host launch procedure",
+                      "properties": {
+                        "startup": {
+                          "type": "string",
+                          "description": "Whether the operator during host launch procedure should wait for startup probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to do not wait.\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "readiness": {
+                          "type": "string",
+                          "description": "Whether the operator during host launch procedure should wait for readiness probe to succeed.\nIn case probe is unspecified wait is assumed to be completed successfully.\nDefault option value is to wait.\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "drop": {
+                  "type": "object",
+                  "properties": {
+                    "replicas": {
+                      "type": "object",
+                      "description": "Whether the operator during reconcile procedure should drop replicas when replica is deleted or recreated\n",
+                      "properties": {
+                        "onDelete": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop replicas when replica is deleted\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "onLostVolume": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop replicas when replica volume is lost\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        },
+                        "active": {
+                          "type": "string",
+                          "description": "Whether the operator during reconcile procedure should drop active replicas when replica is deleted or recreated\n",
+                          "enum": [
+                            "",
+                            "0",
+                            "1",
+                            "False",
+                            "false",
+                            "True",
+                            "true",
+                            "No",
+                            "no",
+                            "Yes",
+                            "yes",
+                            "Off",
+                            "off",
+                            "On",
+                            "on",
+                            "Disable",
+                            "disable",
+                            "Enable",
+                            "enable",
+                            "Disabled",
+                            "disabled",
+                            "Enabled",
+                            "enabled"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
                     }
                   },
                   "additionalProperties": false
@@ -482,6 +796,157 @@
           },
           "additionalProperties": false
         },
+        "metrics": {
+          "type": "object",
+          "description": "defines metrics exporter options",
+          "properties": {
+            "labels": {
+              "type": "object",
+              "description": "defines metric labels options",
+              "properties": {
+                "exclude": {
+                  "type": "array",
+                  "description": "When adding labels to a metric exclude labels with names from the following list\n",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "status": {
+          "type": "object",
+          "description": "defines status options",
+          "properties": {
+            "fields": {
+              "type": "object",
+              "description": "defines status fields options",
+              "properties": {
+                "action": {
+                  "type": "string",
+                  "description": "Whether the operator should fill status field 'action'",
+                  "enum": [
+                    "",
+                    "0",
+                    "1",
+                    "False",
+                    "false",
+                    "True",
+                    "true",
+                    "No",
+                    "no",
+                    "Yes",
+                    "yes",
+                    "Off",
+                    "off",
+                    "On",
+                    "on",
+                    "Disable",
+                    "disable",
+                    "Enable",
+                    "enable",
+                    "Disabled",
+                    "disabled",
+                    "Enabled",
+                    "enabled"
+                  ]
+                },
+                "actions": {
+                  "type": "string",
+                  "description": "Whether the operator should fill status field 'actions'",
+                  "enum": [
+                    "",
+                    "0",
+                    "1",
+                    "False",
+                    "false",
+                    "True",
+                    "true",
+                    "No",
+                    "no",
+                    "Yes",
+                    "yes",
+                    "Off",
+                    "off",
+                    "On",
+                    "on",
+                    "Disable",
+                    "disable",
+                    "Enable",
+                    "enable",
+                    "Disabled",
+                    "disabled",
+                    "Enabled",
+                    "enabled"
+                  ]
+                },
+                "error": {
+                  "type": "string",
+                  "description": "Whether the operator should fill status field 'error'",
+                  "enum": [
+                    "",
+                    "0",
+                    "1",
+                    "False",
+                    "false",
+                    "True",
+                    "true",
+                    "No",
+                    "no",
+                    "Yes",
+                    "yes",
+                    "Off",
+                    "off",
+                    "On",
+                    "on",
+                    "Disable",
+                    "disable",
+                    "Enable",
+                    "enable",
+                    "Disabled",
+                    "disabled",
+                    "Enabled",
+                    "enabled"
+                  ]
+                },
+                "errors": {
+                  "type": "string",
+                  "description": "Whether the operator should fill status field 'errors'",
+                  "enum": [
+                    "",
+                    "0",
+                    "1",
+                    "False",
+                    "false",
+                    "True",
+                    "true",
+                    "No",
+                    "no",
+                    "Yes",
+                    "yes",
+                    "Off",
+                    "off",
+                    "On",
+                    "on",
+                    "Disable",
+                    "disable",
+                    "Enable",
+                    "enable",
+                    "Disabled",
+                    "disabled",
+                    "Enabled",
+                    "enabled"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
         "statefulSet": {
           "type": "object",
           "description": "define StatefulSet-specific parameters",
@@ -534,8 +999,7 @@
           },
           "additionalProperties": false
         }
-      },
-      "additionalProperties": false
+      }
     }
   }
 }
