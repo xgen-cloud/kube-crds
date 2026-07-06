@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "properties": {
+    "spec": {
+      "type": "object",
+      "properties": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "serviceAccountNamespace": {
+              "type": "string",
+              "description": "Kubernetes namespace of the service account."
+            },
+            "bucketArn": {
+              "type": "string",
+              "description": "ARN of the S3 bucket for storing artifacts."
+            },
+            "oidcProvider": {
+              "type": "object",
+              "properties": {
+                "arn": {
+                  "type": "string",
+                  "description": "ARN of the OIDC provider."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the OIDC provider."
+                }
+              },
+              "required": [
+                "arn",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "serviceAccountNamespace",
+            "bucketArn",
+            "oidcProvider"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "roleArn": {
+          "type": "string",
+          "description": "ARN of the created IAM Role."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
