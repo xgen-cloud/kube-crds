@@ -2,6 +2,12 @@
   "properties": {
     "spec": {
       "properties": {
+        "configuration": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
         "ingress": {
           "properties": {
             "annotations": {
@@ -43,12 +49,6 @@
           },
           "type": "object",
           "additionalProperties": false
-        },
-        "configuration": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "type": "object"
         },
         "template": {
           "properties": {
@@ -180,7 +180,9 @@
                     "v1_20",
                     "v2_0",
                     "v2_1",
-                    "v2_2"
+                    "v2_2",
+                    "v2_3",
+                    "v2_4"
                   ],
                   "type": "string"
                 },
