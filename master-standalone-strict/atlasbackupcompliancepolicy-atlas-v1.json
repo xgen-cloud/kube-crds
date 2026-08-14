@@ -13,18 +13,18 @@
       "type": "object"
     },
     "spec": {
-      "description": "AtlasBackupCompliancePolicySpec is the specification of the desired configuration of backup compliance policy",
+      "description": "AtlasBackupCompliancePolicySpec is the specification of the desired backup compliance policy configuration.",
       "properties": {
         "authorizedEmail": {
-          "description": "Email address of the user who authorized to update the Backup Compliance Policy settings.",
+          "description": "Email address of the user authorized to update Backup Compliance Policy settings.",
           "type": "string"
         },
         "authorizedUserFirstName": {
-          "description": "First name of the user who authorized to updated the Backup Compliance Policy settings.",
+          "description": "First name of the user authorized to update the Backup Compliance Policy settings.",
           "type": "string"
         },
         "authorizedUserLastName": {
-          "description": "Last name of the user who authorized to updated the Backup Compliance Policy settings.",
+          "description": "Last name of the user authorized to update the Backup Compliance Policy settings.",
           "type": "string"
         },
         "copyProtectionEnabled": {
@@ -32,14 +32,14 @@
           "type": "boolean"
         },
         "encryptionAtRestEnabled": {
-          "description": "Flag that indicates whether Encryption at Rest using Customer Key Management is required for all clusters with a Backup Compliance Policy.",
+          "description": "Flag that indicates whether to require Encryption at Rest using Customer Key Management for all clusters with a Backup Compliance Policy.",
           "type": "boolean"
         },
         "onDemandPolicy": {
           "description": "Specifications for on-demand policy.",
           "properties": {
             "retentionUnit": {
-              "description": "Scope of the backup policy item: days, weeks, or months",
+              "description": "Scope of the backup policy item: days, weeks, or months.",
               "enum": [
                 "days",
                 "weeks",
@@ -48,7 +48,7 @@
               "type": "string"
             },
             "retentionValue": {
-              "description": "Value to associate with RetentionUnit",
+              "description": "Value to associate with RetentionUnit.",
               "type": "integer"
             }
           },
@@ -60,7 +60,7 @@
           "additionalProperties": false
         },
         "overwriteBackupPolicies": {
-          "description": "Flag that indicates whether to overwrite non complying backup policies with the new data protection settings or not.",
+          "description": "Flag that indicates whether to overwrite non-complying backup policies with the new data protection settings.",
           "type": "boolean"
         },
         "pointInTimeEnabled": {
@@ -68,7 +68,7 @@
           "type": "boolean"
         },
         "restoreWindowDays": {
-          "description": "Number of previous days that you can restore back to with Continuous Cloud Backup with a Backup Compliance Policy. This parameter applies only to Continuous Cloud Backups with a Backup Compliance Policy.",
+          "description": "Number of previous days from which you can restore with Continuous Cloud Backup with a Backup Compliance Policy.\nThis parameter applies only to Continuous Cloud Backups with a Backup Compliance Policy.",
           "type": "integer"
         },
         "scheduledPolicyItems": {
@@ -76,7 +76,7 @@
           "items": {
             "properties": {
               "frequencyInterval": {
-                "description": "Desired frequency of the new backup policy item specified by FrequencyType. A value of 1 specifies the first instance of the corresponding FrequencyType.\nThe only accepted value you can set for frequency interval with NVMe clusters is 12.",
+                "description": "Frequency of the new backup policy item specified by FrequencyType. A value of 1 specifies the first instance of the corresponding FrequencyType.\nYou can set FrequencyInterval only to 12 for NVMe clusters.",
                 "enum": [
                   1,
                   2,
@@ -111,7 +111,7 @@
                 "type": "integer"
               },
               "frequencyType": {
-                "description": "Frequency associated with the backup policy item. One of the following values: hourly, daily, weekly or monthly. You cannot specify multiple hourly and daily backup policy items.",
+                "description": "Frequency associated with the backup policy item. You can specify only one each of hourly or daily backup policy items.",
                 "enum": [
                   "hourly",
                   "daily",
@@ -122,7 +122,7 @@
                 "type": "string"
               },
               "retentionUnit": {
-                "description": "Scope of the backup policy item: days, weeks, or months",
+                "description": "Unit of time in which MongoDB Atlas measures snapshot retention.",
                 "enum": [
                   "days",
                   "weeks",
@@ -132,7 +132,7 @@
                 "type": "string"
               },
               "retentionValue": {
-                "description": "Value to associate with RetentionUnit",
+                "description": "Duration in days, weeks, months, or years that MongoDB Cloud retains the snapshot.\nFor less frequent policy items, MongoDB Cloud requires that you specify a value greater than or equal to the value specified for more frequent policy items.",
                 "type": "integer"
               }
             },
@@ -157,6 +157,7 @@
       "additionalProperties": false
     },
     "status": {
+      "description": "BackupCompliancePolicyStatus defines the observed state of AtlasBackupCompliancePolicy.",
       "properties": {
         "conditions": {
           "description": "Conditions is the list of statuses showing the current state of the Atlas Custom Resource",
@@ -164,12 +165,12 @@
             "description": "Condition describes the state of an Atlas Custom Resource at a certain point.",
             "properties": {
               "lastTransitionTime": {
-                "description": "Last time the condition transitioned from one status to another.",
+                "description": "Last time the condition transitioned from one status to another.\nRepresented in ISO 8601 format.",
                 "format": "date-time",
                 "type": "string"
               },
               "message": {
-                "description": "A human readable message indicating details about the transition.",
+                "description": "A message providing details about the transition.",
                 "type": "string"
               },
               "reason": {
@@ -177,7 +178,7 @@
                 "type": "string"
               },
               "status": {
-                "description": "Status of the condition, one of True, False, Unknown.",
+                "description": "Status of the condition; one of True, False, Unknown.",
                 "type": "string"
               },
               "type": {
@@ -195,7 +196,7 @@
           "type": "array"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification of which the Atlas Operator is aware.\nThe Atlas Operator updates this field to the value of 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         }

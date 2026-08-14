@@ -13,13 +13,14 @@
       "type": "object"
     },
     "spec": {
+      "description": "AtlasStreamInstanceSpec defines the target state of AtlasStreamInstance.",
       "properties": {
         "clusterConfig": {
-          "description": "The configuration to be used to connect to a Atlas Cluster",
+          "description": "The configuration to be used to connect to an Atlas Cluster.",
           "properties": {
             "provider": {
               "default": "AWS",
-              "description": "Name of the cluster configured for this connection",
+              "description": "Name of the cluster configured for this connection.",
               "enum": [
                 "AWS",
                 "GCP",
@@ -53,16 +54,16 @@
           "additionalProperties": false
         },
         "connectionRegistry": {
-          "description": "List of connections of the stream instance for the specified project",
+          "description": "List of connections of the stream instance for the specified project.",
           "items": {
             "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
             "properties": {
               "name": {
-                "description": "Name is the name of the Kubernetes Resource",
+                "description": "Name of the Kubernetes Resource",
                 "type": "string"
               },
               "namespace": {
-                "description": "Namespace is the namespace of the Kubernetes Resource",
+                "description": "Namespace of the Kubernetes Resource",
                 "type": "string"
               }
             },
@@ -75,18 +76,18 @@
           "type": "array"
         },
         "name": {
-          "description": "Human-readable label that identifies the stream connection",
+          "description": "Human-readable label that identifies the stream connection.",
           "type": "string"
         },
         "projectRef": {
-          "description": "Project which the instance belongs to",
+          "description": "Project which the instance belongs to.",
           "properties": {
             "name": {
-              "description": "Name is the name of the Kubernetes Resource",
+              "description": "Name of the Kubernetes Resource",
               "type": "string"
             },
             "namespace": {
-              "description": "Namespace is the namespace of the Kubernetes Resource",
+              "description": "Namespace of the Kubernetes Resource",
               "type": "string"
             }
           },
@@ -106,6 +107,7 @@
       "additionalProperties": false
     },
     "status": {
+      "description": "AtlasStreamInstanceStatus defines the observed state of AtlasStreamInstance.",
       "properties": {
         "conditions": {
           "description": "Conditions is the list of statuses showing the current state of the Atlas Custom Resource",
@@ -113,12 +115,12 @@
             "description": "Condition describes the state of an Atlas Custom Resource at a certain point.",
             "properties": {
               "lastTransitionTime": {
-                "description": "Last time the condition transitioned from one status to another.",
+                "description": "Last time the condition transitioned from one status to another.\nRepresented in ISO 8601 format.",
                 "format": "date-time",
                 "type": "string"
               },
               "message": {
-                "description": "A human readable message indicating details about the transition.",
+                "description": "A message providing details about the transition.",
                 "type": "string"
               },
               "reason": {
@@ -126,7 +128,7 @@
                 "type": "string"
               },
               "status": {
-                "description": "Status of the condition, one of True, False, Unknown.",
+                "description": "Status of the condition; one of True, False, Unknown.",
                 "type": "string"
               },
               "type": {
@@ -155,11 +157,11 @@
                 "description": "Reference for the resource that contains connection configuration",
                 "properties": {
                   "name": {
-                    "description": "Name is the name of the Kubernetes Resource",
+                    "description": "Name of the Kubernetes Resource",
                     "type": "string"
                   },
                   "namespace": {
-                    "description": "Namespace is the namespace of the Kubernetes Resource",
+                    "description": "Namespace of the Kubernetes Resource",
                     "type": "string"
                   }
                 },
@@ -187,7 +189,7 @@
           "type": "string"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification of which the Atlas Operator is aware.\nThe Atlas Operator updates this field to the value of 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         }

@@ -13,14 +13,14 @@
       "type": "object"
     },
     "spec": {
-      "description": "TeamSpec defines the desired state of a Team in Atlas",
+      "description": "TeamSpec defines the target state of a Team in Atlas.",
       "properties": {
         "name": {
           "description": "The name of the team you want to create.",
           "type": "string"
         },
         "usernames": {
-          "description": "Valid email addresses of users to add to the new team",
+          "description": "Valid email addresses of users to add to the new team.",
           "items": {
             "format": "email",
             "type": "string"
@@ -36,6 +36,7 @@
       "additionalProperties": false
     },
     "status": {
+      "description": "TeamStatus defines the observed state of AtlasTeam.",
       "properties": {
         "conditions": {
           "description": "Conditions is the list of statuses showing the current state of the Atlas Custom Resource",
@@ -43,12 +44,12 @@
             "description": "Condition describes the state of an Atlas Custom Resource at a certain point.",
             "properties": {
               "lastTransitionTime": {
-                "description": "Last time the condition transitioned from one status to another.",
+                "description": "Last time the condition transitioned from one status to another.\nRepresented in ISO 8601 format.",
                 "format": "date-time",
                 "type": "string"
               },
               "message": {
-                "description": "A human readable message indicating details about the transition.",
+                "description": "A message providing details about the transition.",
                 "type": "string"
               },
               "reason": {
@@ -56,7 +57,7 @@
                 "type": "string"
               },
               "status": {
-                "description": "Status of the condition, one of True, False, Unknown.",
+                "description": "Status of the condition; one of True, False, Unknown.",
                 "type": "string"
               },
               "type": {
@@ -78,7 +79,7 @@
           "type": "string"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification of which the Atlas Operator is aware.\nThe Atlas Operator updates this field to the value of 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         },

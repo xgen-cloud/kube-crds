@@ -13,10 +13,10 @@
       "type": "object"
     },
     "spec": {
-      "description": "AtlasIPAccessListSpec defines the desired state of AtlasIPAccessList.",
+      "description": "AtlasIPAccessListSpec defines the target state of AtlasIPAccessList.",
       "properties": {
         "connectionSecret": {
-          "description": "Name of the secret containing Atlas API private and public keys",
+          "description": "Name of the secret containing Atlas API private and public keys.",
           "properties": {
             "name": {
               "description": "Name of the resource being referred to\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
@@ -30,7 +30,7 @@
           "additionalProperties": false
         },
         "entries": {
-          "description": "Entries is the list of IP Access to be managed",
+          "description": "Entries is the list of IP Access to be managed.",
           "items": {
             "properties": {
               "awsSecurityGroup": {
@@ -68,10 +68,10 @@
           "type": "array"
         },
         "externalProjectRef": {
-          "description": "\"externalProjectRef\" holds the parent Atlas project ID.\nMutually exclusive with the \"projectRef\" field",
+          "description": "externalProjectRef holds the parent Atlas project ID.\nMutually exclusive with the \"projectRef\" field.",
           "properties": {
             "id": {
-              "description": "ID is the Atlas project ID",
+              "description": "ID is the Atlas project ID.",
               "type": "string"
             }
           },
@@ -82,14 +82,14 @@
           "additionalProperties": false
         },
         "projectRef": {
-          "description": "\"projectRef\" is a reference to the parent AtlasProject resource.\nMutually exclusive with the \"externalProjectRef\" field",
+          "description": "projectRef is a reference to the parent AtlasProject resource.\nMutually exclusive with the \"externalProjectRef\" field.",
           "properties": {
             "name": {
-              "description": "Name is the name of the Kubernetes Resource",
+              "description": "Name of the Kubernetes Resource",
               "type": "string"
             },
             "namespace": {
-              "description": "Namespace is the namespace of the Kubernetes Resource",
+              "description": "Namespace of the Kubernetes Resource",
               "type": "string"
             }
           },
@@ -125,12 +125,12 @@
             "description": "Condition describes the state of an Atlas Custom Resource at a certain point.",
             "properties": {
               "lastTransitionTime": {
-                "description": "Last time the condition transitioned from one status to another.",
+                "description": "Last time the condition transitioned from one status to another.\nRepresented in ISO 8601 format.",
                 "format": "date-time",
                 "type": "string"
               },
               "message": {
-                "description": "A human readable message indicating details about the transition.",
+                "description": "A message providing details about the transition.",
                 "type": "string"
               },
               "reason": {
@@ -138,7 +138,7 @@
                 "type": "string"
               },
               "status": {
-                "description": "Status of the condition, one of True, False, Unknown.",
+                "description": "Status of the condition; one of True, False, Unknown.",
                 "type": "string"
               },
               "type": {
@@ -178,7 +178,7 @@
           "type": "array"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification of which the Atlas Operator is aware.\nThe Atlas Operator updates this field to the value of 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         }
