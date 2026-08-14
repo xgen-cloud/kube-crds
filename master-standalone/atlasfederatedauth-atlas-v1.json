@@ -13,16 +13,17 @@
       "type": "object"
     },
     "spec": {
+      "description": "AtlasFederatedAuthSpec defines the target state of AtlasFederatedAuth.",
       "properties": {
         "connectionSecretRef": {
           "description": "Connection secret with API credentials for configuring the federation.\nThese credentials must have OrganizationOwner permissions.",
           "properties": {
             "name": {
-              "description": "Name is the name of the Kubernetes Resource",
+              "description": "Name of the Kubernetes Resource",
               "type": "string"
             },
             "namespace": {
-              "description": "Namespace is the namespace of the Kubernetes Resource",
+              "description": "Namespace of the Kubernetes Resource",
               "type": "string"
             }
           },
@@ -33,7 +34,7 @@
           "additionalProperties": false
         },
         "dataAccessIdentityProviders": {
-          "description": "The collection of unique ids representing the identity providers that can be used for data access in this organization.\nCurrently connected data access identity providers missing from the this field will be disconnected.",
+          "description": "The collection of unique ids representing the identity providers that can be used for data access in this organization.\nCurrently connected data access identity providers missing from this field will be disconnected.",
           "items": {
             "type": "string"
           },
@@ -48,7 +49,7 @@
         },
         "domainRestrictionEnabled": {
           "default": false,
-          "description": "Prevent users in the federation from accessing organizations outside of the federation, and creating new organizations.\nThis option applies to the entire federation.\nSee more information at https://www.mongodb.com/docs/atlas/security/federation-advanced-options/#restrict-user-membership-to-the-federation",
+          "description": "Prevent users in the federation from accessing organizations outside the federation, and creating new organizations.\nThis option applies to the entire federation.\nSee more information at https://www.mongodb.com/docs/atlas/security/federation-advanced-options/#restrict-user-membership-to-the-federation",
           "type": "boolean"
         },
         "enabled": {
@@ -82,29 +83,7 @@
                       "type": "string"
                     },
                     "role": {
-                      "description": "The role in Atlas that should be given to group members.",
-                      "enum": [
-                        "ORG_MEMBER",
-                        "ORG_READ_ONLY",
-                        "ORG_BILLING_ADMIN",
-                        "ORG_GROUP_CREATOR",
-                        "ORG_OWNER",
-                        "ORG_BILLING_READ_ONLY",
-                        "ORG_TEAM_MEMBERS_ADMIN",
-                        "GROUP_AUTOMATION_ADMIN",
-                        "GROUP_BACKUP_ADMIN",
-                        "GROUP_MONITORING_ADMIN",
-                        "GROUP_OWNER",
-                        "GROUP_READ_ONLY",
-                        "GROUP_USER_ADMIN",
-                        "GROUP_BILLING_ADMIN",
-                        "GROUP_DATA_ACCESS_ADMIN",
-                        "GROUP_DATA_ACCESS_READ_ONLY",
-                        "GROUP_DATA_ACCESS_READ_WRITE",
-                        "GROUP_CHARTS_ADMIN",
-                        "GROUP_CLUSTER_MANAGER",
-                        "GROUP_SEARCH_INDEX_EDITOR"
-                      ],
+                      "description": "The role in Atlas that should be given to group members. See https://www.mongodb.com/docs/atlas/reference/user-roles/ for allowed values",
                       "type": "string"
                     }
                   },
@@ -128,6 +107,7 @@
       "additionalProperties": false
     },
     "status": {
+      "description": "AtlasFederatedAuthStatus defines the observed state of AtlasFederatedAuth.",
       "properties": {
         "conditions": {
           "description": "Conditions is the list of statuses showing the current state of the Atlas Custom Resource",
@@ -135,12 +115,12 @@
             "description": "Condition describes the state of an Atlas Custom Resource at a certain point.",
             "properties": {
               "lastTransitionTime": {
-                "description": "Last time the condition transitioned from one status to another.",
+                "description": "Last time the condition transitioned from one status to another.\nRepresented in ISO 8601 format.",
                 "format": "date-time",
                 "type": "string"
               },
               "message": {
-                "description": "A human readable message indicating details about the transition.",
+                "description": "A message providing details about the transition.",
                 "type": "string"
               },
               "reason": {
@@ -148,7 +128,7 @@
                 "type": "string"
               },
               "status": {
-                "description": "Status of the condition, one of True, False, Unknown.",
+                "description": "Status of the condition; one of True, False, Unknown.",
                 "type": "string"
               },
               "type": {
@@ -166,7 +146,7 @@
           "type": "array"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification of which the Atlas Operator is aware.\nThe Atlas Operator updates this field to the value of 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         }

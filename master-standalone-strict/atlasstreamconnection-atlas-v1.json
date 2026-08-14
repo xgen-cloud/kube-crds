@@ -13,23 +13,24 @@
       "type": "object"
     },
     "spec": {
+      "description": "AtlasStreamConnectionSpec defines the target state of AtlasStreamConnection.",
       "properties": {
         "clusterConfig": {
-          "description": "The configuration to be used to connect to a Atlas Cluster",
+          "description": "The configuration to be used to connect to an Atlas Cluster.",
           "properties": {
             "name": {
-              "description": "Name of the cluster configured for this connection",
+              "description": "Name of the cluster configured for this connection.",
               "type": "string"
             },
             "role": {
-              "description": "The name of a Built in or Custom DB Role to connect to an Atlas Cluster",
+              "description": "The name of a built-in or Custom DB Role to connect to an Atlas Cluster.",
               "properties": {
                 "name": {
-                  "description": "The name of the role to use. Can be a built in role or a custom role",
+                  "description": "The name of the role to use. Can be a built-in role or a custom role.",
                   "type": "string"
                 },
                 "type": {
-                  "description": "Type of the DB role. Can be either BuiltIn or Custom",
+                  "description": "Type of the DB role. Can be either BUILT_IN or CUSTOM.",
                   "enum": [
                     "BUILT_IN",
                     "CUSTOM"
@@ -53,20 +54,20 @@
           "additionalProperties": false
         },
         "kafkaConfig": {
-          "description": "The configuration to be used to connect to a Kafka Cluster",
+          "description": "The configuration to be used to connect to a Kafka Cluster.",
           "properties": {
             "authentication": {
-              "description": "User credentials required to connect to a Kafka Cluster. Includes the authentication type, as well as the parameters for that authentication mode",
+              "description": "User credentials required to connect to a Kafka Cluster. Includes the authentication type, as well as the parameters for that authentication mode.",
               "properties": {
                 "credentials": {
                   "description": "Reference to the secret containing th Username and Password of the account to connect to the Kafka cluster.",
                   "properties": {
                     "name": {
-                      "description": "Name is the name of the Kubernetes Resource",
+                      "description": "Name of the Kubernetes Resource",
                       "type": "string"
                     },
                     "namespace": {
-                      "description": "Namespace is the namespace of the Kubernetes Resource",
+                      "description": "Namespace of the Kubernetes Resource",
                       "type": "string"
                     }
                   },
@@ -77,7 +78,7 @@
                   "additionalProperties": false
                 },
                 "mechanism": {
-                  "description": "Style of authentication. Can be one of PLAIN, SCRAM-256, or SCRAM-512",
+                  "description": "Style of authentication. Can be one of PLAIN, SCRAM-256, or SCRAM-512.",
                   "enum": [
                     "PLAIN",
                     "SCRAM-256",
@@ -101,21 +102,21 @@
               "additionalProperties": {
                 "type": "string"
               },
-              "description": "A map of Kafka key-value pairs for optional configuration. This is a flat object, and keys can have '.' characters",
+              "description": "A map of Kafka key-value pairs for optional configuration. This is a flat object, and keys can have '.' characters.",
               "type": "object"
             },
             "security": {
-              "description": "Properties for the secure transport connection to Kafka. For SSL, this can include the trusted certificate to use",
+              "description": "Properties for the secure transport connection to Kafka. For SSL, this can include the trusted certificate to use.",
               "properties": {
                 "certificate": {
-                  "description": "A trusted, public x509 certificate for connecting to Kafka over SSL",
+                  "description": "A trusted, public x509 certificate for connecting to Kafka over SSL.",
                   "properties": {
                     "name": {
-                      "description": "Name is the name of the Kubernetes Resource",
+                      "description": "Name of the Kubernetes Resource",
                       "type": "string"
                     },
                     "namespace": {
-                      "description": "Namespace is the namespace of the Kubernetes Resource",
+                      "description": "Namespace of the Kubernetes Resource",
                       "type": "string"
                     }
                   },
@@ -126,7 +127,7 @@
                   "additionalProperties": false
                 },
                 "protocol": {
-                  "description": "Describes the transport type. Can be either PLAINTEXT or SSL",
+                  "description": "Describes the transport type. Can be either PLAINTEXT or SSL.",
                   "enum": [
                     "PLAINTEXT",
                     "SSL"
@@ -150,11 +151,11 @@
           "additionalProperties": false
         },
         "name": {
-          "description": "Human-readable label that uniquely identifies the stream connection",
+          "description": "Human-readable label that uniquely identifies the stream connection.",
           "type": "string"
         },
         "type": {
-          "description": "Type of the connection. Can be either Cluster or Kafka",
+          "description": "Type of the connection. Can be either Cluster or Kafka.",
           "enum": [
             "Kafka",
             "Cluster",
@@ -171,6 +172,7 @@
       "additionalProperties": false
     },
     "status": {
+      "description": "AtlasStreamConnectionStatus defines the observed state of AtlasStreamConnection.",
       "properties": {
         "conditions": {
           "description": "Conditions is the list of statuses showing the current state of the Atlas Custom Resource",
@@ -178,12 +180,12 @@
             "description": "Condition describes the state of an Atlas Custom Resource at a certain point.",
             "properties": {
               "lastTransitionTime": {
-                "description": "Last time the condition transitioned from one status to another.",
+                "description": "Last time the condition transitioned from one status to another.\nRepresented in ISO 8601 format.",
                 "format": "date-time",
                 "type": "string"
               },
               "message": {
-                "description": "A human readable message indicating details about the transition.",
+                "description": "A message providing details about the transition.",
                 "type": "string"
               },
               "reason": {
@@ -191,7 +193,7 @@
                 "type": "string"
               },
               "status": {
-                "description": "Status of the condition, one of True, False, Unknown.",
+                "description": "Status of the condition; one of True, False, Unknown.",
                 "type": "string"
               },
               "type": {
@@ -214,11 +216,11 @@
             "description": "ResourceRefNamespaced is a reference to a Kubernetes Resource that allows to configure the namespace",
             "properties": {
               "name": {
-                "description": "Name is the name of the Kubernetes Resource",
+                "description": "Name of the Kubernetes Resource",
                 "type": "string"
               },
               "namespace": {
-                "description": "Namespace is the namespace of the Kubernetes Resource",
+                "description": "Namespace of the Kubernetes Resource",
                 "type": "string"
               }
             },
@@ -231,7 +233,7 @@
           "type": "array"
         },
         "observedGeneration": {
-          "description": "ObservedGeneration indicates the generation of the resource specification that the Atlas Operator is aware of.\nThe Atlas Operator updates this field to the 'metadata.generation' as soon as it starts reconciliation of the resource.",
+          "description": "ObservedGeneration indicates the generation of the resource specification of which the Atlas Operator is aware.\nThe Atlas Operator updates this field to the value of 'metadata.generation' as soon as it starts reconciliation of the resource.",
           "format": "int64",
           "type": "integer"
         }
