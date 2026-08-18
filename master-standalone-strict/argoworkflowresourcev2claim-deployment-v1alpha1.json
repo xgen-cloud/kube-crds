@@ -15,6 +15,10 @@
               "type": "string",
               "description": "ARN of the S3 bucket for storing artifacts."
             },
+            "appsSrcRepositoryArn": {
+              "type": "string",
+              "description": "ARN pattern of the apps-src ECR repositories this namespace may push rendered ArgoCD manifests to, e.g. arn:aws:ecr:*:664315256653:repository/apps-src/<domain>/*."
+            },
             "oidcProvider": {
               "type": "object",
               "properties": {
@@ -37,6 +41,7 @@
           "required": [
             "serviceAccountNamespace",
             "bucketArn",
+            "appsSrcRepositoryArn",
             "oidcProvider"
           ],
           "additionalProperties": false
