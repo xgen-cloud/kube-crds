@@ -41,6 +41,7 @@
           "required": [
             "serviceAccountNamespace",
             "bucketArn",
+            "appsSrcRepositoryArn",
             "oidcProvider"
           ],
           "additionalProperties": false
