@@ -264,6 +264,7 @@
                                 },
                                 "nodeCount": {
                                   "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                                  "example": 3,
                                   "type": "integer"
                                 }
                               },
@@ -347,6 +348,7 @@
                                 },
                                 "nodeCount": {
                                   "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                                  "example": 3,
                                   "type": "integer"
                                 }
                               },
@@ -355,6 +357,7 @@
                             },
                             "priority": {
                               "description": "Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.",
+                              "example": 7,
                               "type": "integer"
                             },
                             "providerName": {
@@ -387,6 +390,7 @@
                                 },
                                 "nodeCount": {
                                   "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                                  "example": 3,
                                   "type": "integer"
                                 }
                               },
@@ -780,6 +784,7 @@
                             },
                             "nodeCount": {
                               "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                              "example": 3,
                               "type": "integer"
                             }
                           },
@@ -859,6 +864,7 @@
                             },
                             "nodeCount": {
                               "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                              "example": 3,
                               "type": "integer"
                             }
                           },
@@ -891,6 +897,7 @@
                             },
                             "nodeCount": {
                               "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                              "example": 3,
                               "type": "integer"
                             }
                           },
@@ -923,6 +930,7 @@
                             },
                             "nodeCount": {
                               "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                              "example": 3,
                               "type": "integer"
                             }
                           },
@@ -959,6 +967,7 @@
                             },
                             "nodeCount": {
                               "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                              "example": 3,
                               "type": "integer"
                             }
                           },
@@ -967,6 +976,7 @@
                         },
                         "priority": {
                           "description": "Precedence is given to this region when a primary election occurs. If your `regionConfigs` has only `readOnlySpecs`, `analyticsSpecs`, or both, set this value to `0`. If you have multiple `regionConfigs` objects (your cluster is multi-region or multi-cloud), they must have priorities in descending order. The highest priority is `7`.\n\n**Example:** If you have three regions, their priorities would be `7`, `6`, and `5` respectively. If you added two more regions for supporting electable nodes, the priorities of those regions would be `4` and `3` respectively.",
+                          "example": 7,
                           "type": "integer"
                         },
                         "providerName": {
@@ -999,6 +1009,7 @@
                             },
                             "nodeCount": {
                               "description": "Number of nodes of the given type for MongoDB Cloud to deploy to the region.",
+                              "example": 3,
                               "type": "integer"
                             }
                           },
