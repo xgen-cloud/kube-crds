@@ -1,0 +1,12 @@
+{
+  "providers": {
+    "dynamodb": "v2.7.0",
+    "ecr": "v2.7.0",
+    "iam": "v2.7.0",
+    "kinesis": "v2.7.0",
+    "s3": "v2.7.0",
+    "sns": "v2.7.0",
+    "sqs": "v2.7.0"
+  },
+  "source": "xgen-cloud/kube-resources/apps/base/crossplane-v2/providers/upbound-provider-family-aws.yaml"
+}

@@ -1,0 +1,30 @@
+---
+name: test
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  upbound_aws_drift:
+    runs-on: [self-hosted, al2023, x64, large]
+    container: 664315256653.dkr.ecr.us-east-1.amazonaws.com/base/amazonlinux2023-gh-actions:202609110841-fc14c25
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: regenerate Upbound AWS schemas from the lockfile
+        run: uv run scripts/generate-upbound-aws.py
+
+      - name: detect drift
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git status --porcelain
+            echo "Schemas are stale. Run: uv run scripts/generate-upbound-aws.py, then commit."
+            exit 1
+          fi
