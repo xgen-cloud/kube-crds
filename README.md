@@ -13,4 +13,10 @@ Make sure to run with `export FILENAME_FORMAT='{kind}-{group}-{version}'`. Schem
 ../scripts/openapi2jsonschema.py path/to/source-crds.yaml
 ```
 
+For Crossplane XRDs, point `scripts/update-xrd-schemas.sh` at the repo that defines them. It finds every XRD, including under `.infra/`, and writes both directories:
+
+```sh
+./scripts/update-xrd-schemas.sh path/to/tenant-repo
+```
+
 [1]: https://github.com/yannh/kubeconform/tree/932b35d71ffc806ff5845ced8a9cb52c0104e883#converting-an-openapi-file-to-a-json-schema

@@ -14,9 +14,5 @@ for pin in $pins; do
     [ -d "$work/$version" ] || { mkdir -p "$work/$version" && curl -fsSL \
         "https://codeload.github.com/crossplane-contrib/provider-upjet-aws/tar.gz/refs/tags/$version" |
         tar -xz -C "$work/$version" --strip-components=1; }
-    for dir in master-standalone master-standalone-strict; do
-        (cd "$dir" && FILENAME_FORMAT='{kind}-{group}-{version}' \
-            uv run --with pyyaml ../scripts/openapi2jsonschema.py \
-            "$work/$version/package/crds/$service.aws.m.upbound.io_"*.yaml >/dev/null)
-    done
+    ./scripts/write-schemas.sh "$work/$version/package/crds/$service.aws.m.upbound.io_"*.yaml
 done
