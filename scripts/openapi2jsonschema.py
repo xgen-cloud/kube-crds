@@ -142,7 +142,7 @@ if __name__ == "__main__":
                   defs.extend(y["items"])
               if "kind" not in y:
                   continue
-              if y["kind"] != "CustomResourceDefinition":
+              if y["kind"] not in ("CustomResourceDefinition", "CompositeResourceDefinition"):
                   continue
               else:
                   defs.append(y)
@@ -161,6 +161,10 @@ if __name__ == "__main__":
                           ).lower() + ".json"
 
                           schema = version["schema"]["openAPIV3Schema"]
+                          # Crossplane injects spec.crossplane into the CRD it generates from an XRD.
+                          if y["kind"] == "CompositeResourceDefinition":
+                              schema.setdefault("properties", {}).setdefault("spec", {}).setdefault("properties", {})["crossplane"] = {
+                                  "type": "object", "x-kubernetes-preserve-unknown-fields": True}
                           write_schema_file(schema, filename)
                       elif "validation" in y["spec"] and "openAPIV3Schema" in y["spec"]["validation"]:
                           filename = filename_format.format(

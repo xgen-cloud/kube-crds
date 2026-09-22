@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "spec": {
+      "type": "object",
+      "properties": {
+        "bucketName": {
+          "type": "string"
+        },
+        "crossplane": {
+          "type": "object",
+          "x-kubernetes-preserve-unknown-fields": true
+        }
+      },
+      "required": [
+        "bucketName"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
