@@ -95,11 +95,28 @@ def append_no_duplicates(obj, key, value):
         obj[key].append(value)
 
 
+def drop_required_with_defaults(node):
+    "The API server fills in a default before validating; kubeconform does not, so a required field carrying one can only false-fail."
+    if isinstance(node, dict):
+        props = node.get("properties") or {}
+        if "required" in node:
+            node["required"] = [n for n in node["required"] if "default" not in (props.get(n) or {})]
+            if not node["required"]:
+                del node["required"]
+        for value in node.values():
+            drop_required_with_defaults(value)
+    elif isinstance(node, list):
+        for item in node:
+            drop_required_with_defaults(item)
+    return node
+
+
 def write_schema_file(schema, filename):
     schemaJSON = ""
 
     schema = additional_properties(schema, skip=not os.getenv("DENY_ROOT_ADDITIONAL_PROPERTIES"))
     schema = replace_int_or_string(schema)
+    schema = drop_required_with_defaults(schema)
     schemaJSON = json.dumps(schema, indent=2)
 
     # Dealing with user input here..
