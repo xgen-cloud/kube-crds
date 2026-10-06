@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "properties": {
+    "spec": {
+      "type": "object",
+      "properties": {
+        "resourceGroupName": {
+          "type": "string"
+        },
+        "storageAccountName": {
+          "type": "string",
+          "pattern": "^[a-z0-9]{3,24}$"
+        },
+        "location": {
+          "type": "string",
+          "default": "eastus2"
+        },
+        "crossplane": {
+          "type": "object",
+          "x-kubernetes-preserve-unknown-fields": true
+        }
+      },
+      "required": [
+        "resourceGroupName",
+        "storageAccountName"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
