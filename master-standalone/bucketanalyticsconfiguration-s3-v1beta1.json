@@ -120,7 +120,7 @@
                   "additionalProperties": {
                     "type": "string"
                   },
-                  "description": "Key-value map of resource tags.",
+                  "description": "Set of object tags for filtering.",
                   "type": "object",
                   "x-kubernetes-map-type": "granular"
                 }
@@ -143,7 +143,7 @@
                   "description": "Data export configuration (documented below).",
                   "properties": {
                     "destination": {
-                      "description": "Specifies the destination for the exported analytics data (documented below).",
+                      "description": "Destination for the exported analytics data (documented below).",
                       "properties": {
                         "s3BucketDestination": {
                           "description": "Analytics data export currently only supports an S3 bucket destination (documented below).",
@@ -249,7 +249,7 @@
                               "type": "string"
                             },
                             "prefix": {
-                              "description": "Object prefix for filtering.",
+                              "description": "Prefix to append to exported analytics data.",
                               "type": "string"
                             }
                           },
@@ -385,7 +385,7 @@
                   "additionalProperties": {
                     "type": "string"
                   },
-                  "description": "Key-value map of resource tags.",
+                  "description": "Set of object tags for filtering.",
                   "type": "object",
                   "x-kubernetes-map-type": "granular"
                 }
@@ -404,7 +404,7 @@
                   "description": "Data export configuration (documented below).",
                   "properties": {
                     "destination": {
-                      "description": "Specifies the destination for the exported analytics data (documented below).",
+                      "description": "Destination for the exported analytics data (documented below).",
                       "properties": {
                         "s3BucketDestination": {
                           "description": "Analytics data export currently only supports an S3 bucket destination (documented below).",
@@ -510,7 +510,7 @@
                               "type": "string"
                             },
                             "prefix": {
-                              "description": "Object prefix for filtering.",
+                              "description": "Prefix to append to exported analytics data.",
                               "type": "string"
                             }
                           },
@@ -626,7 +626,7 @@
                   "additionalProperties": {
                     "type": "string"
                   },
-                  "description": "Key-value map of resource tags.",
+                  "description": "Set of object tags for filtering.",
                   "type": "object",
                   "x-kubernetes-map-type": "granular"
                 }
@@ -652,7 +652,7 @@
                   "description": "Data export configuration (documented below).",
                   "properties": {
                     "destination": {
-                      "description": "Specifies the destination for the exported analytics data (documented below).",
+                      "description": "Destination for the exported analytics data (documented below).",
                       "properties": {
                         "s3BucketDestination": {
                           "description": "Analytics data export currently only supports an S3 bucket destination (documented below).",
@@ -670,7 +670,7 @@
                               "type": "string"
                             },
                             "prefix": {
-                              "description": "Object prefix for filtering.",
+                              "description": "Prefix to append to exported analytics data.",
                               "type": "string"
                             }
                           },
