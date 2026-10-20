@@ -18,7 +18,8 @@ for family in aws gcp azure; do
         # github releases are generally only made for minor versions
         # transform v2.9.2 -> v2.9.0
         version="${version%.*}.0"
-        # [ "$family" = gcp ]  && version="v3.1.0" # override pinned version to get near-future CRDs
+        [ "$family" = gcp ]  && version="v3.1.0" # override pinned version to get near-future CRDs
+        echo "Fetching version ${version} for ${family} ${service}..."
         [ -d "$work/$version" ] || { mkdir -p "$work/$version" && curl -fsSL \
             "https://codeload.github.com/crossplane-contrib/provider-upjet-$family/tar.gz/refs/tags/$version" |
             tar -xz -C "$work/$version" --strip-components=1; }
