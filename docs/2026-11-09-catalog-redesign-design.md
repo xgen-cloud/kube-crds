@@ -121,12 +121,23 @@ templated `-schema-location` mechanism.
   PR body. (Builder's call, recorded here for review.)
 - **README rewritten**: the catalog layout, the consumer invocation, the
   generation commands, and `SOURCES.md` become the documented contract.
-- **Compatibility**: the old flat directories are deleted in the same PR
-  (consumers are in-repo-known and migrated in lockstep — see rollout).
+- **Compatibility — the flat layout is not deleted.** The existing
+  `master-standalone-strict/` tree keeps working for every existing
+  consumer, including kube-ci (which hard-fails on missing schemas). The
+  new `{group}/` catalog ships **alongside** it; consumers migrate in
+  their own PRs on their own schedule, and a far-future cleanup PR may
+  remove the flat tree once all in-repo consumers are switched (or it
+  stays as deprecated legacy — harmless either way).
+- **The stale-schema fix ships in BOTH layouts in the same PR**: the flat
+  `master-standalone-strict/httproute-gateway-v1.json` (and its v1beta1
+  sibling) is regenerated from the pinned v1.6.1 CRDs per the documented
+  process — unblocking kube-resources TODO(kube-crds#57) immediately,
+  before any consumer migrates. Same for the non-strict sibling.
 
 ## Rollout
 
-Consumer touch points (each a one-line template change):
+Additive, no breaking window anywhere. Consumer touch points (each a
+one-line template change, landed whenever ready — none block another):
 
 | Consumer | Location |
 |---|---|
@@ -134,19 +145,6 @@ Consumer touch points (each a one-line template change):
 | `recursive-flux-render.py` | kube-resources |
 | kube-ci Go constant (`cmd/kube-ci/internal/kubeconform/kubeconform.go`) | gosre |
 | edge-workbench `generate-schemas.py` + `validate.py` rung 2 | edge-workbench |
-
-Order: kube-ci's location is embedded in a fleet-gating Go service that
-runs with `IgnoreMissingSchemas: false` — for kube-ci, the gap between
-"kube-crds merge" and "kube-ci redeployed" is a fleet-wide **hard fail**
-("could not find schema"), not a skip. **[OPEN — needs operator input:**
-how kube-ci is rolled out/pinned to the gate, and whether that window is
-acceptable; if not, the order inverts — the gosre PR carries both
-locations (new templated first, old flat as fallback), deploys first, and
-a cleanup PR drops the flat location after kube-crds merges]**.
-
-For the `-ignore-missing-schemas` consumers (kube-resources CI,
-recursive-flux-render.py), the same window is a *skip*, not a false pass;
-their PRs land with or after the kube-crds merge.
 
 The edge-workbench change is **consistency-only, not critical path**: its
 schema cache is generated locally from vendored CRDs and never fetches
@@ -164,13 +162,11 @@ new layout as a follow-up. (Builder's call.)
   schemas.
 - The migration script lists anything unmoved; the PR carries the triage list.
 
-**[OPEN — needs operator input:** the repo has no CI at all (no workflows in
-git history), so "the gate is green" needs a decision on infrastructure:
-GitHub Actions on self-hosted runners (kube-resources' pattern) vs
-GitHub-hosted, the kubeconform pin, and whether wiring the check as a
-required branch-protection check is in scope (needs repo admin). Until
-decided, the self-check runs as a manual script with its output quoted in
-the PR.**]**
+**[Builder's call, recorded for review:** the repo has no CI today (no
+workflows in git history); adding CI infrastructure is a separate work
+stream, out of scope for this PR. The self-check ships as a committed
+script and its output is quoted in the PR body — the same evidence a
+future workflow would produce if CI is wired up later.**]**
 
 ## Left to the builder
 
