@@ -83,12 +83,17 @@ templated `-schema-location` mechanism.
 
 ## Decided
 
-- **Layout**: `{group}/{Kind}_{apiVersion}.json`, full group as the directory
-  (e.g. `gateway.networking.k8s.io/HTTPRoute_v1.json`,
-  `monitoring.coreos.com/PodMonitor_v1.json`). File names are the exact
-  expansion of the consumer template `{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json`
-  — we control the writer, so files match the template byte-for-byte (datree
-  lowercases kinds for cosmetic reasons; we do not — no case-sensitivity risk).
+- **Layout**: `{group}/{kind}_{apiVersion}.json` with a **lowercase kind**
+  (e.g. `gateway.networking.k8s.io/httproute_v1.json`,
+  `monitoring.coreos.com/podmonitor_v1.json`). kubeconform lowercases
+  `{{.ResourceKind}}` itself when expanding the consumer template
+  (`strings.ToLower` in `pkg/registry/registry.go`, verified in v0.6.7 and
+  v0.8.0) and raw.githubusercontent.com is case-sensitive — verified against
+  the live datree catalog: `httproute_v1.json` → 200,
+  `HTTPRoute_v1.json` → 404. Files match the template expansion
+  byte-for-byte. (An earlier draft of this document stored original-case
+  kinds; that design would 404 in Linux CI while passing locally on macOS's
+  case-insensitive filesystem.)
 - **Single tree, no strict split.** All fleet consumers run `-strict`; the
   converter's strictness is baked in. The old `master-standalone/` (non-strict)
   tree is not migrated.
@@ -107,6 +112,13 @@ templated `-schema-location` mechanism.
   this repo's `scripts/openapi2jsonschema.py` into the new layout — this is
   what fixes the stale `HTTPRoute` schema. The update-*.sh scripts (XRD,
   kro, crossplane) are updated to write the new layout for future runs.
+- **`disagg/` folds into the catalog and the directory is deleted**: its
+  schemas become `operator.victoriametrics.com/{kind}_{version}.json` in the
+  one tree. Nothing in the three consumer repos references `disagg/`
+  anymore (gosre dropped its reference in 693adbac), and keeping a second
+  layout defeats the "one tree" goal. Residual risk — an unknown *public*
+  consumer of `disagg/` paths — is accepted as small and called out in the
+  PR body. (Builder's call, recorded here for review.)
 - **README rewritten**: the catalog layout, the consumer invocation, the
   generation commands, and `SOURCES.md` become the documented contract.
 - **Compatibility**: the old flat directories are deleted in the same PR
@@ -123,13 +135,24 @@ Consumer touch points (each a one-line template change):
 | kube-ci Go constant (`cmd/kube-ci/internal/kubeconform/kubeconform.go`) | gosre |
 | edge-workbench `generate-schemas.py` + `validate.py` rung 2 | edge-workbench |
 
-Order: kube-crds PR first (old layout deleted, new catalog + docs); each
-consumer PR lands with or after it. Between kube-crds merge and a consumer's
-switch, that consumer's CRD validation falls back to `default` only — with
-`-ignore-missing-schemas` this is a *skip*, not a false pass, for fleet-gated
-manifests (kube-ci hard-fails unknown kinds independently). The consumer PRs
-are coordinated by SRE-22556 follow-ups; this PR is mergeable only when its
-own gate (kubeconform self-check over the new catalog, below) is green.
+Order: kube-ci's location is embedded in a fleet-gating Go service that
+runs with `IgnoreMissingSchemas: false` — for kube-ci, the gap between
+"kube-crds merge" and "kube-ci redeployed" is a fleet-wide **hard fail**
+("could not find schema"), not a skip. **[OPEN — needs operator input:**
+how kube-ci is rolled out/pinned to the gate, and whether that window is
+acceptable; if not, the order inverts — the gosre PR carries both
+locations (new templated first, old flat as fallback), deploys first, and
+a cleanup PR drops the flat location after kube-crds merges]**.
+
+For the `-ignore-missing-schemas` consumers (kube-resources CI,
+recursive-flux-render.py), the same window is a *skip*, not a false pass;
+their PRs land with or after the kube-crds merge.
+
+The edge-workbench change is **consistency-only, not critical path**: its
+schema cache is generated locally from vendored CRDs and never fetches
+kube-crds, so nothing breaks if it lags. It aligns
+`generate-schemas.py`, `validate.py` rung 2, and `validate_live.py` to the
+new layout as a follow-up. (Builder's call.)
 
 ## Verification
 
@@ -140,6 +163,14 @@ own gate (kubeconform self-check over the new catalog, below) is green.
   (e.g. `timeouts` on HTTPRoute rules) validate against the regenerated
   schemas.
 - The migration script lists anything unmoved; the PR carries the triage list.
+
+**[OPEN — needs operator input:** the repo has no CI at all (no workflows in
+git history), so "the gate is green" needs a decision on infrastructure:
+GitHub Actions on self-hosted runners (kube-resources' pattern) vs
+GitHub-hosted, the kubeconform pin, and whether wiring the check as a
+required branch-protection check is in scope (needs repo admin). Until
+decided, the self-check runs as a manual script with its output quoted in
+the PR.**]**
 
 ## Left to the builder
 
