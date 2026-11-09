@@ -1,0 +1,66 @@
+{
+  "type": "object",
+  "properties": {
+    "spec": {
+      "type": "object",
+      "properties": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "serviceAccountNamespace": {
+              "type": "string",
+              "description": "Kubernetes namespace of the service account."
+            },
+            "bucketArn": {
+              "type": "string",
+              "description": "ARN of the S3 bucket for storing artifacts."
+            },
+            "appsSrcRepositoryArn": {
+              "type": "string",
+              "description": "ARN pattern of the apps-src ECR repositories this namespace may push rendered ArgoCD manifests to, e.g. arn:aws:ecr:*:664315256653:repository/apps-src/<domain>/*."
+            },
+            "oidcProvider": {
+              "type": "object",
+              "properties": {
+                "arn": {
+                  "type": "string",
+                  "description": "ARN of the OIDC provider."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the OIDC provider."
+                }
+              },
+              "required": [
+                "arn",
+                "name"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "serviceAccountNamespace",
+            "bucketArn",
+            "appsSrcRepositoryArn",
+            "oidcProvider"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "parameters"
+      ],
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "roleArn": {
+          "type": "string",
+          "description": "ARN of the created IAM Role."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
