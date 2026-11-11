@@ -119,8 +119,13 @@ def write_schema_file(schema, filename):
     schema = drop_required_with_defaults(schema)
     schemaJSON = json.dumps(schema, indent=2)
 
-    # Dealing with user input here..
-    filename = os.path.basename(filename)
+    # Support group-nested FILENAME_FORMAT values (e.g.
+    # '{fullgroup}/{kind}_{version}'): only strip directory components
+    # when the format carries none, and create the target directory.
+    if os.path.dirname(filename):
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+    else:
+        filename = os.path.basename(filename)
     f = open(filename, "w")
     print(schemaJSON, file=f)
     f.close()
